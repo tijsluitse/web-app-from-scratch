@@ -11,15 +11,15 @@ Native javascript kun je schrijven zonder het inladen van externe library. jQuer
 
 Bron: http://blog.romanliutikov.com/post/63383858003/how-to-forget-about-jquery-and-start-using-native
 
-Voordelen
-1. Oneindig veel documentatie
-2. Veel dingen zijn al eens geschreven (geld natuurlijk ook voor Javascript)
-3. Minder tekens nodig voor bepaalde selectoren
+Voordelen:
+Oneindig veel documentatie
+Veel dingen zijn al eens geschreven (geld natuurlijk ook voor Javascript)
+Minder tekens nodig voor bepaalde selectoren
 
-Nadelen
-1. Je zal altijd een jQuery file moeten inladen waar je functionaliteit uit haalt
-2. Je website/app wordt hierdoor trager
-3. Je leert hoe het framework werkt inplaats van de code er achter
+Nadelen:
+Je zal altijd een jQuery file moeten inladen waar je functionaliteit uit haalt
+Je website/app wordt hierdoor trager
+Je leert hoe het framework werkt inplaats van de code er achter
 
 Bron: http://1stwebdesigner.com/pros-cons-frameworks/
 
