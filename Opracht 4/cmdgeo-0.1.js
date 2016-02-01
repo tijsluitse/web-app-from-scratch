@@ -59,7 +59,7 @@ function init(){
         debugMessage('GPS is niet beschikbaar.')
     });
 
-    (geo_position_js.init())?ET.fire(gpsAvailable):ET.fire(gpsUnavailable);
+    (geoPositionJs.init())?ET.fire(gpsAvailable):ET.fire(gpsUnavailable);
 }
 
 // Start een interval welke op basis van refreshRate de positie updated
@@ -73,7 +73,7 @@ function startInterval(event){
 // Vraag de huidige positie aan geo.js, stel een callback in voor het resultaat
 function updatePosition(){
     intervalCounter++;
-    geo_position_js.getCurrentPosition(setPosition, geoErrorHandler, {
+    geoPositionJs.getCurrentPosition(setPosition, geoErrorHandler, {
         enableHighAccuracy:true
     });
 }
@@ -96,7 +96,7 @@ function checkLocations(event){
             }
         };
 
-        if(_calculate_distance(locatie, currentPosition)<locaties[i][2]){
+        if(calculateDistance(locatie, currentPosition)<locaties[i][2]){
 
             // Controle of we NU op die locatie zijn, zo niet gaan we naar de betreffende page
             if(window.location!=locaties[i][1] && localStorage[locaties[i][0]]=="false"){
@@ -104,20 +104,20 @@ function checkLocations(event){
                 try {
                     (localStorage[locaties[i][0]]=="false")?localStorage[locaties[i][0]]=1:localStorage[locaties[i][0]]++;
                 } catch(error) {
-                    debugMessage("Localstorage kan niet aangesproken worden: "+error);
+                    debugMessage("Localstorage kan niet aangesproken worden: " + error);
                 }
 
 // TODO: Animeer de betreffende marker
 
                 window.location = locaties[i][1];
-                debugMessage("Speler is binnen een straal van "+ locaties[i][2] +" meter van "+locaties[i][0]);
+                debugMessage("Speler is binnen een straal van " + locaties[i][2] + " meter van " + locaties[i][0]);
             }
         }
     }
 }
 
 // Bereken het verchil in meters tussen twee punten
-function _calculate_distance(p1, p2){
+function calculateDistance(p1, p2) {
     var pos1 = new google.maps.LatLng(p1.coords.latitude, p1.coords.longitude);
     var pos2 = new google.maps.LatLng(p2.coords.latitude, p2.coords.longitude);
     return Math.round(google.maps.geometry.spherical.computeDistanceBetween(pos1, pos2), 0);
@@ -126,7 +126,7 @@ function _calculate_distance(p1, p2){
 
 // GOOGLE MAPS FUNCTIES
 /**
- * generate_map(myOptions, canvasId)
+ * generateMap(myOptions, canvasId)
  *  roept op basis van meegegeven opties de google maps API aan
  *  om een kaart te genereren en plaatst deze in het HTML element
  *  wat aangeduid wordt door het meegegeven id.
@@ -137,24 +137,25 @@ function _calculate_distance(p1, p2){
  *  @param canvasID:string - het id van het HTML element waar de
  *      kaart in ge-rendered moet worden, <div> of <canvas>
  */
-function generate_map(myOptions, canvasId){
-// TODO: Kan ik hier asynchroon nog de google maps api aanroepen? dit scheelt calls
-    debugMessage("Genereer een Google Maps kaart en toon deze in #"+canvasId)
+function generateMap(myOptions, canvasId){
+
+    // TODO: Kan ik hier asynchroon nog de google maps api aanroepen? dit scheelt calls
+    debugMessage("Genereer een Google Maps kaart en toon deze in # " + canvasId)
     map = new google.maps.Map(document.getElementById(canvasId), myOptions);
 
     var routeList = [];
     // Voeg de markers toe aan de map afhankelijk van het tourtype
-    debugMessage("Locaties intekenen, tourtype is: "+tourType);
-    for (var i = 0; i < locaties.length; i++) {
+    debugMessage("Locaties intekenen, tourtype is: " + tourType);
 
+    for (var i = 0; i < locaties.length; i++) {
         // Met kudos aan Tomas Harkema, probeer local storage, als het bestaat, voeg de locaties toe
         try {
             (localStorage.visited==undefined||isNumber(localStorage.visited))?localStorage[locaties[i][0]]=false:null;
         } catch (error) {
-            debugMessage("Localstorage kan niet aangesproken worden: "+error);
+            debugMessage("Localstorage kan niet aangesproken worden: " + error);
         }
 
-        var markerLatLng = new google.maps.LatLng(
+        var markerLatLng = new google.maps.LatLng (
             locaties[i][3], 
             locaties[i][4]
         );
@@ -162,9 +163,11 @@ function generate_map(myOptions, canvasId){
         routeList.push(markerLatLng);
 
         markerRij[i] = {};
+
         for (var attr in locatieMarker) {
             markerRij[i][attr] = locatieMarker[attr];
         }
+        
         markerRij[i].scale = locaties[i][2]/3;
 
         var marker = new google.maps.Marker({
@@ -174,8 +177,9 @@ function generate_map(myOptions, canvasId){
             title: locaties[i][0]
         });
     }
+
 // TODO: Kleur aanpassen op het huidige punt van de tour
-    if(tourType == lineair){
+    if(tourType == lineair) {
         // Trek lijnen tussen de punten
         debugMessage("Route intekenen");
         var route = new google.maps.Polyline({
