@@ -16,19 +16,19 @@ var gpsAvailable = 'gpsAvailable';
 var gpsUnavailable = 'gpsUnavailable';
 var positionUpdated = 'positionUpdated';
 var refreshRate = 1000;
-var currentPosition = currentPositionMarker = customDebugging = debugId = map = interval =intervalCounter = updateMap = false;
+var currentPosition = currentPositionMarker = customDebugging = debugId = map = interval = intervalCounter = updateMap = false;
 var locatieRij = markerRij = [];
 
 // Event functies - bron: http://www.nczonline.net/blog/2010/03/09/custom-events-in-javascript/ Copyright (c) 2010 Nicholas C. Zakas. All rights reserved. MIT License
 // Gebruik: ET.addListener('foo', handleEvent); ET.fire('event_name'); ET.removeListener('foo', handleEvent);
-function EventTarget() {
-    this._listeners = {}
+function eventTarget() {
+    this.listeners = {}
 }
 
-EventTarget.prototype = {
-    constructor:EventTarget,addListener:function(a,c){
-        "undefined"==typeof this._listeners[a]&&(this._listeners[a]=[]);
-        this._listeners[a].push(c)
+eventTarget.prototype = {
+    constructor:eventTarget,addListener:function(a,c){
+        "undefined"==typeof this.listeners[a]&&(this.listeners[a]=[]);
+        this.listeners[a].push(c)
     },fire:function(a){
             "string"==typeof a&&(a={
                 type:a
@@ -36,11 +36,11 @@ EventTarget.prototype = {
             a.target||(a.target=this);
             if(!a.type)
                 throw Error("Event object missing 'type' property.");
-            if(this._listeners[a.type]instanceof Array)
-                for (var c=this._listeners[a.type],b=0,d=c.length;b<d;b++)c[b].call(this,a)
+            if(this.listeners[a.type]instanceof Array)
+                for (var c=this.listeners[a.type],b=0,d=c.length;b<d;b++)c[b].call(this,a)
     },removeListener:function(a,c) {
-            if(this._listeners[a]instanceof Array)
-                for (var b=this._listeners[a],d=0,e=b.length;d<e;d++)
+            if(this.listeners[a]instanceof Array)
+                for (var b=this.listeners[a],d=0,e=b.length;d<e;d++)
                     if(b[d]===c){
                         b.splice(d,1);
                         break
@@ -48,7 +48,7 @@ EventTarget.prototype = {
         }
 }; 
 
-var ET = new EventTarget();
+var ET = new eventTarget();
 
 // Test of GPS beschikbaar is (via geo.js) en vuur een event af
 function init(){
@@ -82,7 +82,7 @@ function updatePosition(){
 function setPosition(position){
     currentPosition = position;
     ET.fire("positionUpdated");
-    debugMessage(intervalCounter+" positie lat:"+position.coords.latitude+" long:"+position.coords.longitude);
+    debugMessage(intervalCounter + " positie lat: " + position.coords.latitude + "long: " + position.coords.longitude);
 }
 
 // Controleer de locaties en verwijs naar een andere pagina als we op een locatie zijn
@@ -220,12 +220,12 @@ function update_positie(event){
 // FUNCTIES VOOR DEBUGGING
 
 function geoErrorHandler(code, message) {
-    debugMessage('geo.js error '+code+': '+message);
+    debugMessage("geo.js error " + code + ": " + message);
 }
 function debugMessage(message){
     (customDebugging && debugId)?document.getElementById(debugId).innerHTML:console.log(message);
 }
-function set_custom_debugging(debugId){
+function setCustomDebugging(debugId){
     debugId = this.debugId;
     customDebugging = true;
 }
