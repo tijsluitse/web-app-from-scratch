@@ -1,25 +1,19 @@
-# web-app-from-scratch
+# Opdracht 2: Voor- en nadelen JavaScript libraries/frameworks onderzoeken
 
-Minor - Everything Web - Web App from Scratch
+### Voordelen
+	- Omdat het door heel veel mensen wordt gebruikt bevat het minder fouten en wordt het altijd optimaal gemaakt
+	- Het werkt op alle browsers
+	- Minder tekens nodig voor bepaalde selectoren, je hoeft dus minder code te schrijven
 
-Name: Tijs Luitse
-Date: 01.02.2016
+### Nadelen
+	- Je zal altijd een jQuery file moeten inladen waar je niet alles van gebruikt
+	- Je website/app wordt hierdoor trager
+	- Je leert hoe het framework werkt inplaats van de javascript die code er achter zit
 
-Native javascript kun je schrijven zonder het inladen van externe library. jQuery zorgt ervoor dat je webapp/site zwaarder wordt. Er wordt veel onnodige code gebruikt voor kleine toepassingen. 
+### Bronnen
+	- http://1stwebdesigner.com/pros-cons-frameworks/
+	- http://blog.romanliutikov.com/post/63383858003/how-to-forget-about-jquery-and-start-using-native
 
-Bron: http://blog.romanliutikov.com/post/63383858003/how-to-forget-about-jquery-and-start-using-native
-
-Voordelen:
-Oneindig veel documentatie
-Veel dingen zijn al eens geschreven (geld natuurlijk ook voor Javascript)
-Minder tekens nodig voor bepaalde selectoren
-
-Nadelen:
-Je zal altijd een jQuery file moeten inladen waar je functionaliteit uit haalt
-Je website/app wordt hierdoor trager
-Je leert hoe het framework werkt inplaats van de code er achter
-
-Bron: http://1stwebdesigner.com/pros-cons-frameworks/
 
 
 
