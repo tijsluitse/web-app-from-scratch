@@ -15,7 +15,6 @@ var lineair = "lineair";
 var gpsAvailable = 'gpsAvailable';
 var gpsUnavailable = 'gpsUnavailable';
 var positionUpdated = 'positionUpdated';
-var refreshRate = 1000;
 var currentPosition = currentPositionMarker = customDebugging = debugId = map = interval = intervalCounter = updateMap = false;
 var locatieRij = markerRij = [];
 
@@ -27,38 +26,41 @@ function eventTarget() {
 
 eventTarget.prototype = {    
 
-    constructor:eventTarget,addListener:function(a,c){
-        "undefined"==typeof this.listeners[a]&&(this.listeners[a]=[]);
-        this.listeners[a].push(c)
-    },fire:function(a){
-            "string"==typeof a&&(a={
-                type:a
-            });
-            a.target||(a.target=this);
-            if(!a.type)
-                throw Error("Event object missing 'type' property.");
-            if(this.listeners[a.type]instanceof Array)
-                for (var c=this.listeners[a.type],b=0,d=c.length;b<d;b++)c[b].call(this,a)
-    },removeListener:function(a,c) {
-            if(this.listeners[a]instanceof Array)
-                for (var b=this.listeners[a],d=0,e=b.length;d<e;d++)
-                    if(b[d]===c){
-                        b.splice(d,1);
-                        break
-                    }
-        }
+    constructor:eventTarget,
+
+        addListener:function(a,c){
+            "undefined"==typeof this.listeners[a]&&(this.listeners[a]=[]);
+            this.listeners[a].push(c)
+        },
+
+        fire:function(a){
+                "string" == typeof a && (a = {type:a});
+                a.target||(a.target=this);
+                if(!a.type)
+                    throw Error("Event object missing 'type' property.");
+                if(this.listeners[a.type]instanceof Array)
+                    for (var c=this.listeners[a.type],b=0,d=c.length;b<d;b++)c[b].call(this,a)
+        },
+
+        removeListener:function(a,c) {
+                if(this.listeners[a]instanceof Array)
+                    for (var b=this.listeners[a],d=0,e=b.length;d<e;d++)
+                        if(b[d]===c){
+                            b.splice(d,1);
+                            break
+                        }
+            }
 };
 
 var ET = new eventTarget(); 
 
-// Test of GPS beschikbaar is (via geo.js) en vuur een event af
 function init(){
 
-    debugMessage("Controleer of GPS beschikbaar is...");
+    debugging.debugMessage("Controleer of GPS beschikbaar is...");
 
     ET.addListener(gpsAvailable, startInterval);
     ET.addListener(gpsUnavailable, function(){
-        debugMessage('GPS is niet beschikbaar.')
+        debugging.debugMessage('GPS is niet beschikbaar.')
     });
 
     (geoPositionJs.init())?ET.fire(gpsAvailable):ET.fire(gpsUnavailable);
@@ -67,10 +69,13 @@ function init(){
 var interval = {
 
     startInterval:function(event){
-        debugMessage("GPS is beschikbaar, vraag positie.");
-        updatePosition();
-        interval = self.setInterval(updatePosition, refreshRate);
-        ET.addListener(positionUpdated, checkLocations);
+
+        var refreshRate = 1000;
+
+        debugging.debugMessage("GPS is beschikbaar, vraag positie.");
+        position.updatePosition();
+        interval = self.setInterval(position.updatePosition, refreshRate);
+        ET.addListener(position.positionUpdated, location.checkLocations);
     }
 
 }
@@ -87,7 +92,7 @@ var position = {
     setPosition:function(){
         currentPosition = position;
         ET.fire("positionUpdated");
-        debugMessage(intervalCounter + " positie lat: " + position.coords.latitude + "long: " + position.coords.longitude);
+        debugging.debugMessage(intervalCounter + " positie lat: " + position.coords.latitude + "long: " + position.coords.longitude);
     }
 
 }
@@ -110,10 +115,10 @@ var locations = {
                     try {
                         (localStorage[locaties[i][0]]=="false")?localStorage[locaties[i][0]]=1:localStorage[locaties[i][0]]++;
                     } catch(error) {
-                        debugMessage("Localstorage kan niet aangesproken worden: " + error);
+                        debugging.debugMessage("Localstorage kan niet aangesproken worden: " + error);
                     }
                     window.location = locaties[i][1];
-                    debugMessage("Speler is binnen een straal van " + locaties[i][2] + " meter van " + locaties[i][0]);
+                    debugging.debugMessage("Speler is binnen een straal van " + locaties[i][2] + " meter van " + locaties[i][0]);
                 }
             }
         }
@@ -147,19 +152,19 @@ var distance = {
 function generateMap(myOptions, canvasId){
 
     // TODO: Kan ik hier asynchroon nog de google maps api aanroepen? dit scheelt calls
-    debugMessage("Genereer een Google Maps kaart en toon deze in # " + canvasId)
+    debugging.debugMessage("Genereer een Google Maps kaart en toon deze in # " + canvasId)
     map = new google.maps.Map(document.getElementById(canvasId), myOptions);
 
     var routeList = [];
     // Voeg de markers toe aan de map afhankelijk van het tourtype
-    debugMessage("Locaties intekenen, tourtype is: " + tourType);
+    debugging.debugMessage("Locaties intekenen, tourtype is: " + tourType);
 
     for (var i = 0; i < locaties.length; i++) {
         // Met kudos aan Tomas Harkema, probeer local storage, als het bestaat, voeg de locaties toe
         try {
             (localStorage.visited==undefined||isNumber(localStorage.visited))?localStorage[locaties[i][0]]=false:null;
         } catch (error) {
-            debugMessage("Localstorage kan niet aangesproken worden: " + error);
+            debugging.debugMessage("Localstorage kan niet aangesproken worden: " + error);
         }
 
         var markerLatLng = new google.maps.LatLng (
@@ -188,7 +193,7 @@ function generateMap(myOptions, canvasId){
 // TODO: Kleur aanpassen op het huidige punt van de tour
     if(tourType == lineair) {
         // Trek lijnen tussen de punten
-        debugMessage("Route intekenen");
+        debugging.debugMessage("Route intekenen");
         var route = new google.maps.Polyline({
             clickable: false,
             map: map,
@@ -209,7 +214,7 @@ function generateMap(myOptions, canvasId){
     });
 
     // Zorg dat de kaart geupdated wordt als het positionUpdated event afgevuurd wordt
-    ET.addListener(positionUpdated, updatePositie);
+    ET.addListener(positionUpdated, update.updatePositie);
 }
 
 function isNumber(n) {
@@ -229,7 +234,7 @@ var update = {
 var debugging = {
 
     geoErrorHandler:function(code, message) {
-        debugMessage("geo.js error " + code + ": " + message);
+        debugging.debugMessage("geo.js error " + code + ": " + message);
     }
     debugMessage:function(message) {
         (customDebugging && debugId)?document.getElementById(debugId).innerHTML:console.log(message);
@@ -240,3 +245,8 @@ var debugging = {
     }
 
 }
+
+
+
+
+
