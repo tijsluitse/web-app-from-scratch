@@ -240,7 +240,7 @@ var update = {
 var debugging = {
 
     geoErrorHandler:function(code, message) {
-        debugging.debugMessage("geo.js error " + code + ": " + message);
+        this.debugMessage("geo.js error " + code + ": " + message);
     },
 
     debugMessage:function(message) {

@@ -1,5 +1,6 @@
-# web-app-from-scratch
-Minor - Everything Web - Web App from Scratch
+# Web App from scratch
+
+Name: Tijs Luitse - 500600082
 
 ## Opdracht 2: Voor- en nadelen JavaScript libraries/frameworks onderzoeken
 
