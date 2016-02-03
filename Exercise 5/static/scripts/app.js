@@ -1,32 +1,43 @@
-(function(){
-    "use strict";
+(function() {
+	'use strict'
 
 	var app = {
-		init: function() {
+
+		init: function(){
 			routes.init();
 		}
-	}
+
+	};
 
 	var routes = {
-		init: function() {
-			window.addEventListener("hashchange", function(event){
-				var route = window.location.hash;
-				sections.toggle(route);
+		
+		init: function(){
+			
+			var currentHash = window.location.hash || '#landing';
+			document.querySelector(currentHash).classList.add('active');
+
+			window.addEventListener("hashchange", function(){
+				
+				var newHash = window.location.hash;
+
+				sections.toggle(currentHash,newHash);
+				currentHash = newHash;
+
 			});
 		}
-	}
+
+	};
 
 	var sections = {
-		toggle: function(route) {
-			var sections = document.querySelectorAll(".content");
 
-			[].forEach.call(sections, function(section) {
-        		section.classList.remove('show');
-      		});
+		toggle: function(currentHash,newHash){
 
-      		document.querySelector(route).classList.add('show');
+			document.querySelector(currentHash).classList.remove('active');
+			document.querySelector(newHash).classList.add('active');
+			
 		}
-	}
+
+	};
 
 	app.init();
 

@@ -117,15 +117,13 @@ ul {
 /** CLASSES **/
 /*************/
 
-.content {
+main > section {
 	display: none;
 }
 
-.content.show {
+.active {
 	display: block;
 }
-
-
 
 
 
