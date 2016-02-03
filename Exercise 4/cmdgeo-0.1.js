@@ -9,6 +9,9 @@
 *   Copyleft 2012, all wrongs reversed.
 */
 
+(function(){
+    "use strict";
+
 // Variable declaration
 var sandbox = "sandbox";
 var lineair = "lineair";
@@ -20,50 +23,53 @@ var locatieRij = markerRij = [];
 
 // Event functies - bron: http://www.nczonline.net/blog/2010/03/09/custom-events-in-javascript/ Copyright (c) 2010 Nicholas C. Zakas. All rights reserved. MIT License
 // Gebruik: ET.addListener('foo', handleEvent); ET.fire('event_name'); ET.removeListener('foo', handleEvent);
-function eventTarget() {
+
+function EventTarget() {
     this.listeners = {}
 }
 
-eventTarget.prototype = {    
+EventTarget.prototype = {
 
-    constructor:eventTarget,
+    constructor: EventTarget,
+    addListener: function(a, c){
+        "undefined" == typeof this.listeners[a] && (this.listeners[a] = []);
+        this.listeners[a].push(c)
+    },
 
-        addListener:function(a,c){
-            "undefined"==typeof this.listeners[a]&&(this.listeners[a]=[]);
-            this.listeners[a].push(c)
-        },
+    fire: function(a) {
+            "string" == typeof a && (a = {type:a});
+            a.target || (a.target = this);
+            if (!a.type)
+                throw Error("Event object missing 'type' property.");
+            if (this.listeners[a.type]instanceof Array)
+                for (var c = this.listeners[a.type], b = 0, d = c.length; b < d; b++)c[b].call(this, a)
+    },
 
-        fire:function(a){
-                "string" == typeof a && (a = {type:a});
-                a.target||(a.target=this);
-                if(!a.type)
-                    throw Error("Event object missing 'type' property.");
-                if(this.listeners[a.type]instanceof Array)
-                    for (var c=this.listeners[a.type],b=0,d=c.length;b<d;b++)c[b].call(this,a)
-        },
-
-        removeListener:function(a,c) {
-                if(this.listeners[a]instanceof Array)
-                    for (var b=this.listeners[a],d=0,e=b.length;d<e;d++)
-                        if(b[d]===c){
-                            b.splice(d,1);
-                            break
-                        }
-            }
+    removeListener: function(a, c) {
+            if (this.listeners[a]instanceof Array)
+                for (var b = this.listeners[a], d = 0, e = b.length; d < e; d++)
+                    if(b[d]===c){
+                        b.splice(d,1);
+                        break
+                    }
+        }
 };
 
-var ET = new eventTarget(); 
+var ET = new EventTarget(); 
 
-function init(){
+var gps { 
 
-    debugging.debugMessage("Controleer of GPS beschikbaar is...");
+    init: function() {
+        debugging.debugMessage("Controleer of GPS beschikbaar is...");
 
-    ET.addListener(gpsAvailable, startInterval);
-    ET.addListener(gpsUnavailable, function(){
-        debugging.debugMessage('GPS is niet beschikbaar.')
-    });
+        ET.addListener(gpsAvailable, startInterval);
+        ET.addListener(gpsUnavailable, function(){
+            debugging.debugMessage('GPS is niet beschikbaar.')
+        });
 
-    (geoPositionJs.init())?ET.fire(gpsAvailable):ET.fire(gpsUnavailable);
+        (geoPositionJs.init())?ET.fire(gpsAvailable):ET.fire(gpsUnavailable);
+    }
+
 }
 
 var interval = {
@@ -87,7 +93,7 @@ var position = {
         geoPositionJs.getCurrentPosition(setPosition, geoErrorHandler, {
             enableHighAccuracy:true
         });
-    }
+    },
 
     setPosition:function(){
         currentPosition = position;
@@ -235,10 +241,12 @@ var debugging = {
 
     geoErrorHandler:function(code, message) {
         debugging.debugMessage("geo.js error " + code + ": " + message);
-    }
+    },
+
     debugMessage:function(message) {
         (customDebugging && debugId)?document.getElementById(debugId).innerHTML:console.log(message);
-    }
+    },
+
     setCustomDebugging:function(debugID) {
         debugId = this.debugId;
         customDebugging = true; 
@@ -246,7 +254,7 @@ var debugging = {
 
 }
 
-
+});
 
 
 
