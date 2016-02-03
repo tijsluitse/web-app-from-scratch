@@ -223,7 +223,7 @@ function generateMap(myOptions, canvasId){
     ET.addListener(positionUpdated, update.updatePositie);
 }
 
-function isNumber(n) {
+function isNumber(n) { //functie die je vanaf overal moet kunnen gebruiken
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
