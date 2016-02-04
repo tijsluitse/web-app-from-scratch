@@ -16,8 +16,8 @@ Voor- en nadelen JavaScript libraries/frameworks onderzoeken
 	- Je leert hoe het framework werkt inplaats van de javascript die code er achter zit
 
 #### Bronnen
-	- http://1stwebdesigner.com/pros-cons-frameworks/
-	- http://blog.romanliutikov.com/post/63383858003/how-to-forget-about-jquery-and-start-using-native
+	- [1stwebdesigner.com](http://1stwebdesigner.com/pros-cons-frameworks/)
+	- [Romanliutikov.com](http://blog.romanliutikov.com/post/63383858003/how-to-forget-about-jquery-and-start-using-native)
 
 ### Opdracht 3: 
 Voor- en nadelen single page web app onderzoeken
@@ -33,10 +33,12 @@ Voor- en nadelen single page web app onderzoeken
 	- Het duurt lang voordat de hele pagina is geladen
 
 #### Bronnen
-	- http://www.dialogtech.com/blog/technically-speaking/technically-speaking-the-pros-and-cons-of-single-page-applications-spas
+	- [Dialogtect.com](http://www.dialogtech.com/blog/technically-speaking/technically-speaking-the-pros-and-cons-of-single-page-applications-spas)
 
 ### Opdracht 4: 
 Refactor bestaande lineaire code naar gestructureerde code
+	- [Exercise](https://github.com/tijsluitse/web-app-from-scratch/tree/master/Exercise%204)
 
 ### Opdracht 5: 
-Zet een basisstructuur op voor een single page web app 
+Zet een basisstructuur op voor een single page web app
+	- [Exercise](https://github.com/tijsluitse/web-app-from-scratch/tree/master/Exercise%205)
