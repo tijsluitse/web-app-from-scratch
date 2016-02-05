@@ -21,9 +21,6 @@ var positionUpdated = 'positionUpdated';
 var currentPosition = currentPositionMarker = customDebugging = debugId = map = interval = intervalCounter = updateMap = false;
 var locatieRij = markerRij = [];
 
-// Event functies - bron: http://www.nczonline.net/blog/2010/03/09/custom-events-in-javascript/ Copyright (c) 2010 Nicholas C. Zakas. All rights reserved. MIT License
-// Gebruik: ET.addListener('foo', handleEvent); ET.fire('event_name'); ET.removeListener('foo', handleEvent);
-
 function EventTarget() {
     this.listeners = {}
 }
@@ -120,7 +117,7 @@ var gps {
 
 var distance = {
 
-    calculateDistance:function(p1, p2) {
+    calculateDistance: function(p1, p2) {
         var pos1 = new google.maps.LatLng(p1.coords.latitude, p1.coords.longitude);
         var pos2 = new google.maps.LatLng(p2.coords.latitude, p2.coords.longitude);
         return Math.round(google.maps.geometry.spherical.computeDistanceBetween(pos1, pos2), 0);
@@ -128,23 +125,9 @@ var distance = {
 
 }
 
-// GOOGLE MAPS FUNCTIES
-/**
- * generateMap(myOptions, canvasId)
- *  roept op basis van meegegeven opties de google maps API aan
- *  om een kaart te genereren en plaatst deze in het HTML element
- *  wat aangeduid wordt door het meegegeven id.
- *
- *  @param myOptions:object - een object met in te stellen opties
- *      voor de aanroep van de google maps API, kijk voor een over-
- *      zicht van mogelijke opties op http://
- *  @param canvasID:string - het id van het HTML element waar de
- *      kaart in ge-rendered moet worden, <div> of <canvas>
- */
-
 var map = {
 
-    function generateMap(myOptions, canvasId){
+    generateMap: function(myOptions, canvasId) {
 
     // TODO: Kan ik hier asynchroon nog de google maps api aanroepen? dit scheelt calls
     debug.message("Genereer een Google Maps kaart en toon deze in # " + canvasId)
@@ -185,7 +168,6 @@ var map = {
         });
     }
 
-    // TODO: Kleur aanpassen op het huidige punt van de tour
         if(tourType == lineair) {
             // Trek lijnen tussen de punten
             debug.message("Route intekenen");
@@ -220,7 +202,7 @@ function isNumber(n) { //functie die je vanaf overal moet kunnen gebruiken
 
 var update = {
 
-    updatePositie:function(event) {
+    updatePositie: function(event) {
         var newPos = new google.maps.LatLng(currentPosition.coords.latitude, currentPosition.coords.longitude);
         map.setCenter(newPos);
         currentPositionMarker.setPosition(newPos);
