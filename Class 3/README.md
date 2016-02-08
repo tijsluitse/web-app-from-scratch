@@ -8,4 +8,5 @@
 	- Transparency is een microlib waar je dmv data-bind via js, html kan aanpassen
 	- Routing: het bepalen van een route naar een pagina
 	- Routie is een microlib die verschillende functies start bij verschillende plekken binnen de html (pagina's)
+	- TIP (Kies een microlib die met promises werkt)
 
