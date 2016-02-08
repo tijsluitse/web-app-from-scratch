@@ -12,7 +12,7 @@ var pipo = {
 	name: 'Pipo',
 	shoeSize: 80,
 	laugh: function() {
-		var self = this; //verwijst naar laugh scope
+		var self = this; //verwijst naar functie scope van laugh
 
 		setTimeout (function() {
 			console.log("whoehahaha" + self.shoeSize) //this word nu vervangen door self en komt uiteindelijk bij de laugh functie scope
