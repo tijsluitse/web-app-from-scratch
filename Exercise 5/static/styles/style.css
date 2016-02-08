@@ -97,19 +97,19 @@ ul {
 /**** NAV ****/
 /*************/
 
-#nav ul {
+nav ul {
 	display: flex;
 	flex-direction: row;
 }
 
-#nav ul li {
+nav ul li {
 	width: 50%;
 	background-color: rgba(50,60,75,1);
 	text-align: center;
 	padding: 15px 0;
 }
 
-#nav ul li:first-of-type {
+nav ul li:first-of-type {
 	border-right: 1px solid rgba(255, 255, 255, 0.15);
 }
 

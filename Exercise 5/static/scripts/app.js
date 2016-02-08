@@ -1,5 +1,5 @@
 (function() {
-	'use strict'
+	"use strict"
 
 	var app = {
 
@@ -12,10 +12,10 @@
 	var routes = {
 		
 		init: function(){
-			
-			var currentHash = window.location.hash || '#landing'; //als ie geen hash heeft krijgt ie landing als waarde en anders pakt hij die hash
 
-			document.querySelector(currentHash).classList.add('active'); //id wat actief is krijgt de class active
+			var currentHash = window.location.hash || "#landing"; //als ie geen hash heeft krijgt ie landing als waarde en anders pakt hij die hash
+
+			document.querySelector(currentHash).classList.add("active"); //id wat actief is krijgt de class active
 
 			window.addEventListener("hashchange", function(){
 				
@@ -33,8 +33,8 @@
 
 		toggle: function(currentHash, newHash){
 
-			document.querySelector(currentHash).classList.remove('active'); 
-			document.querySelector(newHash).classList.add('active'); //nieuwe hash/id krijgt class name active
+			document.querySelector(currentHash).classList.remove("active"); 
+			document.querySelector(newHash).classList.add("active"); //nieuwe hash/id krijgt class name active
 			
 		}
 
