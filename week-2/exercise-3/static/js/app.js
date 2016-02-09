@@ -1,5 +1,5 @@
 (function() {
-	"use strict"
+	'use strict'
 
 	var app = {
 
@@ -16,40 +16,84 @@
 			routie({
 
 			    'landing': function() {
-			    	document.getElementById("landing").classList.add("active");
-			    	document.getElementById("instaPosts").classList.remove("active");
+			    	var hashName = this.path;
+			    	sections.toggle(hashName);
+			    	
 			    },
 
 			    'instaPosts': function() {
-			    	document.getElementById("landing").classList.remove("active");
-			    	document.getElementById("instaPosts").classList.add("active");
-			    }
+			    	var hashName = this.path;
+			    	sections.toggle(hashName);
+			    	photoGallery.init();
+			    }			
 			});
 		}
 	}
 
+	var sections = {
+
+		toggle: function(hashName) {
+
+			var allSections = document.querySelectorAll('section');
+			var section = document.getElementById(hashName);
+
+			for (var i=0; i < allSections.length; i++) {
+				allSections[i].classList.remove('active');
+			};
+
+			section.classList.toggle('active');
+
+		}
+
+	}
+
+	var photoGallery = {
+
+		init: function() {
+
+			aja()
+				.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+			    .type('jsonp')
+			    .cache('false')
+			    .on('success', function(data){
+			      	var photos = {};
+			        photos = data;
+			        content.show(photos);
+			    })
+				.go();
+
+		}
+
+	}
+
 	var content = {
 
-		// var hello = {
-		//   greeting: "Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn",
-		//   translation: "In his house at R'lyeh, dead Cthulhu waits dreaming."
-		// };
+		show: function(photos) {
 
-		// Transparency.render(document.getElementById('template'), hello);
+			console.log(photos);
+			
+			var instagramPhotos = {
+			  	title: "Photo Gallery",
+			  	{photos: photos}
+			};
+
+			Transparency.render(document.getElementById('instaPosts'), instagramPhotos);
+
+		}
 
 	}
 
 	app.init();
 
-	aja()
-		.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
-	    .type('jsonp')
-	    .cache('false')
-	    .on('success', function(data){
-	      	var photos = {};
-	        photos = data;
-	        console.log(photos);
-	    })
-		.go();
-
 })();
+
+
+
+
+
+
+
+
+
+
+
