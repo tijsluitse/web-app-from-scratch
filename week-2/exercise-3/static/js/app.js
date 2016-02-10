@@ -58,38 +58,43 @@
 			    .on('success', function(data){
 			      	var photos = {};
 			        photos = data;
-			        content.show(photos);
+			       
+			        var instagramPhotos = {
+					  	title: "Photo Gallery",
+					  	{photos: photos}
+					};
+
+					Transparency.render(document.getElementById('instaPosts'), instagramPhotos);
+
+					var photos, directives;
+
+						comments = ["That rules", "Great post!"];
+
+						// See section 'Directives' for the details
+						directives = {
+						  comment: {
+						    generatePhotos: function() {
+						      	for (var i = 0; i < 20; i++) {
+									var li = document.createElement('li');
+									li.innerHTML = "<a target='_blank' href='" + data.data[i].link + "'><img src='" + data.data[i].images.low_resolution.url +"'></img></a>;"
+									document.querySelector(".popular").appendChild(li);
+								}
+						    }
+						  }
+						};
+
+						$('.comments').render(comments, directives);
+
+
 			    })
 				.go();
 
 		}
 
 	}
-
-	var content = {
-
-		show: function(photos) {
-
-			console.log(photos);
-			
-			var instagramPhotos = {
-			  	title: "Photo Gallery",
-			  	{photos: photos}
-			};
-
-			Transparency.render(document.getElementById('instaPosts'), instagramPhotos);
-
-		}
-
-	}
-
 	app.init();
 
 })();
-
-
-
-
 
 
 
