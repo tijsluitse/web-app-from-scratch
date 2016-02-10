@@ -84,9 +84,9 @@ h1, h2, h3, h4 {
 	color: black;
 }
 
-a {
+a, span {
 	text-decoration: none;
-	color: rgba(255, 255, 255, 0.85);
+	color: black;
 }
 
 ul {

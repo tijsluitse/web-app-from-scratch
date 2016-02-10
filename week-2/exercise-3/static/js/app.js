@@ -55,50 +55,46 @@
 				.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
 			    .type('jsonp')
 			    .cache('false')
-			    .on('success', function(data){
-			      	var photos = {};
-			        photos = data;
-			       
-			        var instagramPhotos = {
-					  	title: "Photo Gallery",
-					  	{photos: photos}
-					};
+			    .on('success', function(data){			    
+			    	
+			    	var data = data.data;
 
-					Transparency.render(document.getElementById('instaPosts'), instagramPhotos);
+			    	console.log(data);
 
-					var photos, directives;
+			        var directives = {
+			      			       
+			        	photoLink: {
+			        		href: function(params) {
+			        			return this.link;
+			        		}
+			        	},
+			        	photoImage: {
+			        		src: function(params) {
+			        			return this.images.low_resolution.url;
+			        		}			        	
+			        	},
+			        	photoLikes: {
+			        		text: function(params) {
+			        			return this.likes.count;
+			        		}
+			        	},
+			        	photoUser: {
+			        		text: function(params) {
+			        			return this.user.full_name;
+			        		}
+			        	}
+			        	
+					}
 
-						comments = ["That rules", "Great post!"];
-
-						// See section 'Directives' for the details
-						directives = {
-						  comment: {
-						    generatePhotos: function() {
-						      	for (var i = 0; i < 20; i++) {
-									var li = document.createElement('li');
-									li.innerHTML = "<a target='_blank' href='" + data.data[i].link + "'><img src='" + data.data[i].images.low_resolution.url +"'></img></a>;"
-									document.querySelector(".popular").appendChild(li);
-								}
-						    }
-						  }
-						};
-
-						$('.comments').render(comments, directives);
-
+					Transparency.render(document.getElementById('photoGallery'), data,  directives);
 
 			    })
-				.go();
 
+				.go();
+			}
 		}
 
-	}
 	app.init();
 
 })();
-
-
-
-
-
-
 

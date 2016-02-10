@@ -10,3 +10,12 @@
 	- Routie is een microlib die verschillende functies start bij verschillende plekken binnen de html (pagina's)
 	- TIP (Kies een microlib die met promises werkt)
 
+### Class 2
+
+	- ECMAScript 2015 / ES6
+		- stelt de standaard
+	- Babel
+		- zet Egmascript om in leesbare code (javascript code)
+	- Modules 
+		- je gebruikt alleen de stukken code die je nodig hebt
+
