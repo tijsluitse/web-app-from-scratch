@@ -2,6 +2,9 @@
 
 Name: Tijs Luitse - 500600082
 
+## Link to exercise 
+[Link](http://tijsluitse.github.io/wafs)
+
 ### Opdracht 2: 
 Voor- en nadelen JavaScript libraries/frameworks onderzoeken
 
