@@ -136,7 +136,34 @@ main > section {
 	flex-wrap: wrap;
 }
 
+#photoGallery li {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 25%;
+    box-sizing: border-box;
+}
 
+#photoGallery li a {
+	width: max-content;
+	padding: 20px;
+}
+
+#photoGallery li a img {
+	width: 100%;
+}
+
+/*****************/
+/* MEDIA QUERIES */
+/*****************/
+
+@media (max-width: 600px) {
+
+	#photoGallery li {
+		width: 100%;
+	}
+
+}
 
 
 

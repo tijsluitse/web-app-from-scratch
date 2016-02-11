@@ -71,6 +71,12 @@
 			    	
 			    	var data = data.data;
 
+			    	var filteredData = _.map(data, function(photoInfo){
+			    		return _.pick(photoInfo, 'id', 'link', 'likes', 'user', 'images', 'tags');
+			    	});
+
+			    	data = filteredData;
+
 			    	console.log(data);
 
 			        var directives = {
@@ -97,13 +103,13 @@
 			        	},
 			        	photoUser: {
 			        		text: function(params) {
-			        			return 'User: ' + this.user.full_name;
+			        			return 'User: ' + this.user.username;
 			        		}
 			        	}
 			        	
 					}
 
-					Transparency.render(document.getElementById('photoGallery'), data,  directives);
+					Transparency.render(document.getElementById('photoGallery'), data, directives);
 
 			    })
 
