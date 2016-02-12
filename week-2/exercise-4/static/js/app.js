@@ -1,3 +1,6 @@
+// Created by: Tijs Luitse
+// Cooperation: Tom Snepvangers
+
 (function() {
 	'use strict'
 
