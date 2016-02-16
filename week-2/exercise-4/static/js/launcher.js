@@ -13,6 +13,13 @@
 var allSections = document.querySelectorAll('section');
 var searchInput = document.getElementById('search');
 var searchSubmit = document.getElementById('submit');
+var photoGalleryTarget = document.getElementById('photoGallery');
+var popularPostsTarget = document.getElementById('popularPosts');
+var singlePhotoTarget = document.getElementById('singlePhoto');
+var userInfoTarget = document.getElementById('userInfo');
+var userFeedTarget = document.getElementById('userFeed');
+var errorMessageTarget = document.getElementById('errorMessage');
+
 
 /////////////////
 // Application //
@@ -37,6 +44,7 @@ var searchSubmit = document.getElementById('submit');
 			routie({
 
 			    'landing': function() {
+			    	photoGallery.popularPosts();
 			    	sections.toggle(this.path);
 			    },
 
@@ -47,6 +55,12 @@ var searchSubmit = document.getElementById('submit');
 			    'single/:id': function(photoId) {
 			    	photoGallery.singlePhoto(photoId);
 			   	 	sections.toggle('singlePhoto');
+			    },
+
+			    'user/:username': function(userId){
+			    	single.userInfo(userId);
+			    	single.userFeed(userId);
+			    	sections.toggle('singleUser');
 			    }
 
 			});
@@ -59,7 +73,7 @@ var searchSubmit = document.getElementById('submit');
 
 			var section = document.getElementById(hashName);
 
-			for (var i=0; i < allSections.length; i++) {
+			for (var i = 0; i < allSections.length; i++) {
 				allSections[i].classList.remove('active');
 			};
 
@@ -71,16 +85,62 @@ var searchSubmit = document.getElementById('submit');
 
 	var photoGallery = {
 
+		popularPosts: function() {
+
+			aja()
+				.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+			    .type('jsonp')
+			    .cache('false')
+			    .on('success', function(data){			    
+			    	
+			    	var data = data.data;
+			   
+			    	var filteredData = _.map(data, function(photoInfo){
+			    		return _.pick(photoInfo, 'id', 'link', 'likes', 'user', 'images', 'tags', 'title');
+			    	});
+
+			    	data = filteredData;
+
+			    	console.log(data);
+			    	
+			        var directives = {
+			      			       
+			        	photoLink: {
+			        		href: function(params) {
+			        			return '#single/' + this.id;			        		
+			        		}
+			        	},
+			        	photoImage: {
+			        		src: function(params) {
+			        			return this.images.low_resolution.url;
+			        		}			        	
+			        	},
+			        	photoTags: {
+			        		text: function(params) {
+			        			return this.tags;
+			        		}
+			        	}
+			        	
+					}
+
+					Transparency.render(popularPostsTarget, data, directives);
+
+			    })
+
+			.go();
+
+		},
+
 		searchFunction: function(){
 
 			searchSubmit.addEventListener('click', function(){
 				var tag = searchInput.value;
-				photoGallery.instaFeed(tag);
+				photoGallery.searchResults(tag);
 			});
 
 		},
 
-		instaFeed: function(tag) {
+		searchResults: function(tag) {
 			
 			aja()
 				.url('https://api.instagram.com/v1/tags/' + tag + '/media/recent?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -98,7 +158,13 @@ var searchSubmit = document.getElementById('submit');
 
 			    	console.log(data);
 
-			        var directives = {
+			    	if (data.length < 1) {
+
+			    		photoGallery.noResults(tag);
+
+			    	} else {
+
+			    		var directives = {
 			      			       
 			        	photoLink: {
 			        		href: function(params) {
@@ -116,18 +182,41 @@ var searchSubmit = document.getElementById('submit');
 			        		}
 			        	},
 			        	photoUser: {
+			        		href: function(params) {
+			        			return '#user/' + this.user.id;
+			        		},
 			        		text: function(params) {
-			        			return 'User: ' + this.user.username;
+			        			return 'User: ' + this.user.full_name;
 			        		}
 			        	}
 			        	
 					}
 
-					Transparency.render(document.getElementById('photoGallery'), data, directives);
+					Transparency.render(photoGalleryTarget, data, directives);
+
+			    	}
 
 			    })
 
 			.go();
+		},
+
+		noResults: function(tag) {
+
+			console.log("Tag not found");
+
+			var directives = {
+			      			       
+	        	error: {
+	        		text: function(params) {
+	        			return 'There are no photos tagged with: ' + tag + '.';
+	        		}
+	        	}
+	        	
+			}
+
+			Transparency.render(errorMessageTarget, tag, directives);
+
 		},
 
 		singlePhoto: function(photoId) {
@@ -142,14 +231,6 @@ var searchSubmit = document.getElementById('submit');
 
 			    	console.log(data);
 
-			    	// var filteredData = _.map(data, function(photoInfo){
-			    	// 	return _.pick(photoInfo, 'id', 'link', 'likes', 'user', 'images', 'tags', 'title');
-			    	// });
-
-			    	// data = filteredData;
-
-			    	// console.log('Nieuwe data: ' + filteredData);
-
 			        var directives = {
 
 			      		photoTitle: {
@@ -159,7 +240,7 @@ var searchSubmit = document.getElementById('submit');
 			      		},	       
 			        	photoImage: {
 			        		src: function(params) {
-			        			return this.images.low_resolution.url;
+			        			return this.images.standard_resolution.url;
 			        		}			        	
 			        	},
 			        	photoLikes: {
@@ -168,14 +249,17 @@ var searchSubmit = document.getElementById('submit');
 			        		}
 			        	},
 			        	photoUser: {
+			        		href: function(params) {
+			        			return '#user/' + this.user.id;
+			        		},
 			        		text: function(params) {
-			        			return 'User: ' + this.user.username;
+			        			return 'User: ' + this.user.full_name;
 			        		}
 			        	}
 			        	
 					}
 
-					Transparency.render(document.getElementById('singlePhoto'), data, directives);
+					Transparency.render(singlePhotoTarget, data, directives);
 
 			    })
 
@@ -183,6 +267,90 @@ var searchSubmit = document.getElementById('submit');
 
 		}
 	
+	}
+
+	var single = {
+
+		userInfo: function(userId) {
+			
+			aja()
+				.url('https://api.instagram.com/v1/users/'  +  userId + '?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+			    .type('jsonp')
+			    .cache('false')
+			    .on('success', function(data){			    
+			    	
+			    	var data = data.data;
+
+			    	console.log(data);
+
+			        var directives = {
+
+			      		userPicture: {
+			      			src: function(params) {
+			      				return this.profile_picture;
+			      			}
+			      		},	       
+			        	userName: {
+			        		text: function(params) {
+			        			return this.full_name;
+			        		}			        	
+			        	},
+			        	userBio: {
+			        		text: function(params) {
+			        			return this.bio;
+			        		}
+			        	}
+			        	
+					}
+
+					Transparency.render(userInfoTarget, data, directives);
+
+			    })
+
+			.go();
+
+		},
+
+		userFeed: function(userId) {
+	
+			aja()
+				.url('https://api.instagram.com/v1/users/'  +  userId + '/media/recent/?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+			    .type('jsonp')
+			    .cache('false')
+			    .on('success', function(data){			    
+			    	
+			    	var data = data.data;
+
+			    	console.log(data);
+
+			        var directives = {
+
+			      		photoLink: {
+			        		href: function(params) {
+			        			return '#single/' + this.id;			        		
+			        		}
+			        	},
+			        	photoImage: {
+			        		src: function(params) {
+			        			return this.images.low_resolution.url;
+			        		}			        	
+			        	},
+			        	photoTags: {
+			        		text: function(params) {
+			        			return this.tags;
+			        		}
+			        	}
+			        	
+					}
+
+					Transparency.render(document.getElementById('feedItems'), data, directives);
+
+			    })
+
+			.go();			
+
+		}
+
 	}
 
 	launcher.init();
