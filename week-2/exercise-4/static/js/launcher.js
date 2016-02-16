@@ -18,6 +18,7 @@ var popularPostsTarget = document.getElementById('popularPosts');
 var singlePhotoTarget = document.getElementById('singlePhoto');
 var userInfoTarget = document.getElementById('userInfo');
 var userFeedTarget = document.getElementById('userFeed');
+var feedItemsTarget = document.getElementById('feedItems'); 
 var errorMessageTarget = document.getElementById('errorMessage');
 
 
@@ -43,12 +44,12 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 			routie({
 
-			    'landing': function() {
+			    'popularMedia': function() {
 			    	photoGallery.popularPosts();
 			    	sections.toggle(this.path);
 			    },
 
-			    'instaPosts': function() {
+			    'searchPhotos': function() {
 			    	sections.toggle(this.path);
 			    },
 
@@ -102,7 +103,28 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	data = filteredData;
 
 			    	console.log(data);
-			    	
+
+			    	//listen to shake event
+				    var myShakeEvent = new Shake ({
+				    	threshold: 15
+				    });
+
+				    myShakeEvent.start();
+				   
+				    window.addEventListener('shake', function() {
+				        alert('Shaked');
+				    }, false);
+
+				    //stop listening
+				    function stopShake(){
+				        myShakeEvent.stop();
+				    }
+
+				    //check if shake is supported or not.
+				    if (!('ondevicemotion' in window)){
+				    	alert('Not Supported');
+				    };
+
 			        var directives = {
 			      			       
 			        	photoLink: {
@@ -160,9 +182,13 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 			    	if (data.length < 1) {
 
+			    		console.log('Tag not found');
+
 			    		photoGallery.noResults(tag);
 
 			    	} else {
+
+			    		console.log('Tag found');
 
 			    		var directives = {
 			      			       
@@ -203,7 +229,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 		noResults: function(tag) {
 
-			console.log("Tag not found");
+			console.log('Fire error');
 
 			var directives = {
 			      			       
@@ -343,7 +369,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			        	
 					}
 
-					Transparency.render(document.getElementById('feedItems'), data, directives);
+					Transparency.render(feedItemsTarget, data, directives);
 
 			    })
 
