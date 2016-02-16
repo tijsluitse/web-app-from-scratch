@@ -13,14 +13,18 @@
 var allSections = document.querySelectorAll('section');
 var searchInput = document.getElementById('search');
 var searchSubmit = document.getElementById('submit');
+
 var photoGalleryTarget = document.getElementById('photoGallery');
 var popularPostsTarget = document.getElementById('popularPosts');
 var singlePhotoTarget = document.getElementById('singlePhoto');
+var likeIcon = document.querySelector('.likeIcon');
+
+var userHeaderTarget = document.getElementById('userHeader');
 var userInfoTarget = document.getElementById('userInfo');
 var userFeedTarget = document.getElementById('userFeed');
 var feedItemsTarget = document.getElementById('feedItems'); 
-var errorMessageTarget = document.getElementById('errorMessage');
 
+var errorMessageTarget = document.getElementById('errorMessage');
 
 /////////////////
 // Application //
@@ -45,23 +49,25 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			routie({
 
 			    'popularMedia': function() {
-			    	photoGallery.popularPosts();
+			    	photoGallery.popularPosts();			    	    				    	
 			    	sections.toggle(this.path);
 			    },
 
 			    'searchPhotos': function() {
 			    	sections.toggle(this.path);
+			    	searchFunction.classList.toggle('active-flex');			    	
 			    },
 
 			    'single/:id': function(photoId) {
 			    	photoGallery.singlePhoto(photoId);
-			   	 	sections.toggle('singlePhoto');
+			   	 	sections.toggle('singlePhoto');			   	 	
 			    },
 
 			    'user/:username': function(userId){
 			    	single.userInfo(userId);
+			    	single.userHeader(userId);
 			    	single.userFeed(userId);
-			    	sections.toggle('singleUser');
+			    	sections.toggle('singleUser');			    	
 			    }
 
 			});
@@ -97,33 +103,12 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	var data = data.data;
 			   
 			    	var filteredData = _.map(data, function(photoInfo){
-			    		return _.pick(photoInfo, 'id', 'link', 'likes', 'user', 'images', 'tags', 'title');
+			    		return _.pick(photoInfo, 'id', 'images', 'likes');
 			    	});
 
 			    	data = filteredData;
 
 			    	console.log(data);
-
-			    	//listen to shake event
-				    var myShakeEvent = new Shake ({
-				    	threshold: 15
-				    });
-
-				    myShakeEvent.start();
-				   
-				    window.addEventListener('shake', function() {
-				        alert('Shaked');
-				    }, false);
-
-				    //stop listening
-				    function stopShake(){
-				        myShakeEvent.stop();
-				    }
-
-				    //check if shake is supported or not.
-				    if (!('ondevicemotion' in window)){
-				    	alert('Not Supported');
-				    };
 
 			        var directives = {
 			      			       
@@ -137,9 +122,9 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			        			return this.images.low_resolution.url;
 			        		}			        	
 			        	},
-			        	photoTags: {
+			        	photoLikes: {
 			        		text: function(params) {
-			        			return this.tags;
+			        			return this.likes.count;
 			        		}
 			        	}
 			        	
@@ -150,6 +135,75 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    })
 
 			.go();
+
+			setTimeout(function() {
+	    	 	photoGallery.shake();
+	    	}, 2000);		
+
+		},
+
+		shake: function() {
+
+			console.log('Shake function loaded');
+
+			// listen to shake event
+		    var photoShuffle = new Shake ({
+		    	threshold: 15, // shake strength threshold
+		    	timeout: 1000 // determines the frequency of event generation
+		    });
+
+		    photoShuffle.start();
+		   
+		    window.addEventListener('shake', function() {
+		        
+			    aja()
+					.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+				    .type('jsonp')
+				    .cache('false')
+				    .on('success', function(data){			    
+				    	
+				    	var data = data.data;
+				   
+				    	var filteredData = _.map(data, function(photoInfo){
+				    		return _.pick(photoInfo, 'id', 'images', 'likes');
+				    	});
+
+				    	data = filteredData;
+
+				    	console.log(data);
+
+				        var directives = {
+				      			       
+				        	photoLink: {
+				        		href: function(params) {
+				        			return '#single/' + this.id;			        		
+				        		}
+				        	},
+				        	photoImage: {
+				        		src: function(params) {
+				        			return this.images.low_resolution.url;
+				        		}			        	
+				        	},
+				        	photoLikes: {
+				        		text: function(params) {
+				        			return this.likes.count;
+				        		}
+				        	}
+				        	
+						}
+
+						Transparency.render(popularPostsTarget, data, directives);
+
+				    })
+
+				.go();
+
+		    }, false);
+
+		    // check if shake is supported or not.
+		    if (!('ondevicemotion' in window)){
+		    	alert('Not Supported');
+		    };
 
 		},
 
@@ -173,7 +227,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	var data = data.data;
 			   
 			    	var filteredData = _.map(data, function(photoInfo){
-			    		return _.pick(photoInfo, 'id', 'link', 'likes', 'user', 'images', 'tags', 'title');
+			    		return _.pick(photoInfo, 'id', 'likes', 'user', 'images');
 			    	});
 
 			    	data = filteredData;
@@ -190,33 +244,32 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 			    		console.log('Tag found');
 
+			    		likeIcon.classList.add("show");
+
 			    		var directives = {
 			      			       
-			        	photoLink: {
-			        		href: function(params) {
-			        			return '#single/' + this.id;			        		
-			        		}
-			        	},
-			        	photoImage: {
-			        		src: function(params) {
-			        			return this.images.low_resolution.url;
-			        		}			        	
-			        	},
-			        	photoLikes: {
-			        		text: function(params) {
-			        			return 'Likes: ' + this.likes.count;
-			        		}
-			        	},
-			        	photoUser: {
-			        		href: function(params) {
-			        			return '#user/' + this.user.id;
-			        		},
-			        		text: function(params) {
-			        			return 'User: ' + this.user.full_name;
-			        		}
-			        	}
+				        	photoLink: {
+				        		href: function(params) {
+				        			return '#single/' + this.id;			        		
+				        		}
+				        	},
+				        	photoImage: {
+				        		src: function(params) {
+				        			return this.images.low_resolution.url;
+				        		}			        	
+				        	},
+				        	photoLikes: {
+				        		text: function(params) {
+				        			return this.likes.count;
+				        		}
+				        	},
+				        	photoUser: {
+				        		href: function(params) {
+				        			return '#user/' + this.user.id;
+				        		}
+				        	}
 			        	
-					}
+						}
 
 					Transparency.render(photoGalleryTarget, data, directives);
 
@@ -261,7 +314,11 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 			      		photoTitle: {
 			      			text: function(params) {
-			      				return this.caption.text;
+		                		if (this.caption) {
+		                			return this.caption.text
+		                		} else {
+		                			return null
+		                		}
 			      			}
 			      		},	       
 			        	photoImage: {
@@ -271,15 +328,17 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			        	},
 			        	photoLikes: {
 			        		text: function(params) {
-			        			return 'Likes: ' + this.likes.count;
+			        			return this.likes.count;
 			        		}
 			        	},
 			        	photoUser: {
 			        		href: function(params) {
 			        			return '#user/' + this.user.id;
-			        		},
+			        		}
+			        	},
+			        	userName: {
 			        		text: function(params) {
-			        			return 'User: ' + this.user.full_name;
+			        			return  this.user.full_name;
 			        		}
 			        	}
 			        	
@@ -296,6 +355,38 @@ var errorMessageTarget = document.getElementById('errorMessage');
 	}
 
 	var single = {
+
+		userHeader: function(userId) {
+
+			aja()
+				.url('https://api.instagram.com/v1/users/'  +  userId + '/media/recent/?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+			    .type('jsonp')
+			    .cache('false')
+			    .on('success', function(data){			    
+			    	
+			    	var data = data.data;
+			    	var photoNumber = data.length;
+			    	var photoChoice = Math.floor(Math.random() * photoNumber) + 0; 
+
+			    	data = data[photoChoice];
+
+			        var directives = {
+
+			      		headerImage: {
+			        		src: function(params) {
+			        			return this.images.standard_resolution.url;;
+			        		}
+			        	}
+			        	
+					}
+
+					Transparency.render(userHeaderTarget, data, directives);
+
+			    })
+
+			.go();
+
+		},
 
 		userInfo: function(userId) {
 			
@@ -350,7 +441,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	console.log(data);
 
 			        var directives = {
-
+	
 			      		photoLink: {
 			        		href: function(params) {
 			        			return '#single/' + this.id;			        		
@@ -361,9 +452,9 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			        			return this.images.low_resolution.url;
 			        		}			        	
 			        	},
-			        	photoTags: {
+			        	photoLikes: {
 			        		text: function(params) {
-			        			return this.tags;
+			        			return this.likes.count;
 			        		}
 			        	}
 			        	

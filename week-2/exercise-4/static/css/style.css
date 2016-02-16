@@ -1,72 +1,4 @@
-html,
-body,
-div,
-span,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-abbr,
-address,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-samp,
-small,
-strong,
-sub,
-sup,
-var,
-b,
-i,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section,
-summary,
-time,
-mark,
-audio,
-video {
+* {
     margin: 0;
     padding: 0;
     border: 0;
@@ -74,47 +6,64 @@ video {
 
 body {
     font-size: 100%;
-    color: rgba(255, 255, 255, 0.5);
     font-family: 'Arial', sans-serif;
-    letter-spacing: .5px;
+    letter-spacing: .05em;
     font-weight: 100;
+    background-color: #F7F7F7;
+    color: #4b4f54;
 }
 
-* {
-	color: black;
+h2 {
+	font-size: 1.5em;
+	color: #3CBEB2;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
 }
 
-h1, h2, h3, h4 {
-	color: black;
-}
-
-a, span {
+a {
 	text-decoration: none;
-	color: black;
+	color: #3CBEB2;
 }
 
 ul {
 	list-style: none;
 }
 
-/*************/
-/**** NAV ****/
-/*************/
+main {
+	padding-top: 3em;
+}
 
-nav ul {
+/**************/
+/* NAVIGATION */
+/**************/
+
+nav[role='navigation'] {
+	background-color: #ffffff;
+	border-bottom: 1px solid #edeeee;
+	position: fixed;
+	width: 100%;
+	z-index: 1000;
+}
+
+nav[role='navigation'] ul {
 	display: flex;
 	flex-direction: row;
 }
 
-nav ul li {
-	width: 50%;
-	background-color: rgba(50,60,75,1);
-	text-align: center;
-	padding: 15px 0;
+nav[role='navigation'] li:first-of-type {
+	border-right: 1px solid #edeeee;
 }
 
-nav ul li:first-of-type {
-	border-right: 1px solid rgba(255, 255, 255, 0.15);
+nav[role='navigation'] li  {
+    width: 50%;
+    display: block;
+    text-align: center;
+}
+
+nav[role='navigation'] a  {
+	display: block;
+	padding: 1em 0;
+	color: #36756F;
 }
 
 /*************/
@@ -131,16 +80,60 @@ main > section {
 	opacity: 1;
 }
 
-/********/
-/* LIST */
-/********/
+.show {
+	display: inline-block !important;
+}
+
+.active-flex {
+	display: flex;
+	opacity: 1;
+}
+
+/***************/
+/* SINGLE VIEW */
+/***************/
+
+#singlePhoto .inner {
+	display: flex;
+    flex-direction: column;
+    margin: auto;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 2em;
+}
+
+#singlePhoto .inner img {
+	max-width: min-content;
+	margin: auto;
+	margin-top: 2em;
+}
+
+#singlePhoto .inner span {
+	width: 50%;
+	margin: auto;
+}
+
+#singlePhoto .likeIcon {
+	width: 3em;
+	position: relative;
+	top: .3em;
+}
+
+#singlePhoto .photoLikes {
+	font-size: 3em;
+	color: white;
+    text-shadow: 1px 1px 3px #252525;
+}
+
+/*************/
+/* LIST VIEW */
+/*************/
 
 ul[role='photoFeed'] {
 	display: flex;
 	flex-direction: row;
 	width: 100%;
 	flex-wrap: wrap;
-	-webkit-overflow-scrolling: touch;
 }
 
 ul[role='photoFeed'] li {
@@ -156,15 +149,108 @@ ul[role='photoFeed'] li a {
 	padding: 1em;
 }
 
-ul[role='photoFeed'] li a img {
+ul[role='photoFeed'] img {
 	width: 17em;
 }
 
+[role='photoFeed'] .likeIcon {
+	width: .9em;
+	display: none;
+}
 
-#singlePhoto {
-	display: flex;
+/****************/
+/* HOVER EFFECT */
+/****************/
+
+.likes {
+	opacity: 0;
+	position: relative;
+	bottom: 25em;
+	transition: all .5s ease;
+}
+
+.photoImage:hover + .likes,
+.likes:hover {
+	opacity: 1;
+}
+
+/********/
+/* FORM */
+/********/
+
+form {
+	width: 30em;
+	margin: auto;
+	margin-top: 2em;
+	margin-bottom: 1em;
+}
+ 
+form input, 
+form div {
+	padding: 1em .5em;
+	font-size: .9em;
+}
+
+form input {
+	border: 1px solid #edeeee;
+}
+
+form input:focus {
+	outline: none;
+}
+
+form input:first-of-type {
+	width: 90%;
+	padding-left: 1em;
+}
+
+form div {
+	width: 10%;
+	text-align: center;
+	border: 2px solid #3CBEB2;
+	color: #3CBEB2;
+}
+
+form div:hover {
+	background-color: #3CBEB2;
+	cursor: pointer;
+	color: #F7F7F7;
+}
+
+form div:hover svg path {
+	fill: white;
+}
+
+
+/***************/
+/* SINGLE USER */
+/***************/
+
+#userInfo {
+    display: flex;
     flex-direction: column;
-    width: min-content;
+    width: 50%;
+    margin: auto;
+    text-align: center;
+    position: relative;
+    top: -5em;
+}
+
+#userInfo img {
+	max-width: min-content;
+	margin: auto;
+	border: 1px solid #edeeee;
+}
+
+#userHeader {
+	width: 100%;
+	overflow: hidden;
+	height: 20em;
+}
+
+#userHeader img {
+	width: 100%;
+	margin-top: -20em;
 }
 
 /*****************/
@@ -172,8 +258,25 @@ ul[role='photoFeed'] li a img {
 /*****************/
 
 @media (max-width: 700px) {
+	main {
+		width: 100%;
+		overflow: hidden;
+	}
 	ul[role='photoFeed'] li {
     	width: 100%;
+	}
+	ul[role='photoFeed'] li a {
+		width: 100%;
+		padding: 0;
+	}
+	ul[role='photoFeed'] img {
+		width: 100%;
+	}
+	form {
+		width: 90%;
+	}
+	#userHeader img {
+		margin-top: 0px;
 	}
 }
 
