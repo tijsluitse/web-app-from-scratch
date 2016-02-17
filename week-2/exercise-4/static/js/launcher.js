@@ -6,38 +6,24 @@
 // Cooperation: Tom Snepvangers
 // Minor: Web application from scratch
 
-///////////////
-// Variables //
-///////////////
-
-var allSections = document.querySelectorAll('section');
-var searchInput = document.getElementById('search');
-var searchSubmit = document.getElementById('submit');
-
-var photoGalleryTarget = document.getElementById('photoGallery');
-var popularPostsTarget = document.getElementById('popularPosts');
-var singlePhotoTarget = document.getElementById('singlePhoto');
-var likeIcon = document.querySelector('.likeIcon');
-
-var userHeaderTarget = document.getElementById('userHeader');
-var userInfoTarget = document.getElementById('userInfo');
-var userFeedTarget = document.getElementById('userFeed');
-var feedItemsTarget = document.getElementById('feedItems'); 
-
-var errorMessageTarget = document.getElementById('errorMessage');
-
 /////////////////
 // Application //
 /////////////////
 
-(function() {
-	'use strict'
+(function() { // Immediately-Invoked Function Expression (IIFE)
+	'use strict' // No global variations from functional or object scope
+
+	var loadingSpinner = document.querySelector('.spinner');
+	var photoPressTarget = document.querySelector('.photoImage');
+	var swipeMenuTarget = document.querySelector('body');
 
 	var launcher = {
 
 		init: function(){
 			routes.init();
-			photoGallery.searchFunction();
+			photoGallery.popularPosts();	
+			search.searchFunction();
+			gestures.swipe();
 		}
 
 	};
@@ -48,25 +34,20 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 			routie({
 
-			    'popularMedia': function() {
-			    	photoGallery.popularPosts();			    	    				    	
+			    'popularMedia': function() {		    	    				    	
 			    	sections.toggle(this.path);
 			    },
-
 			    'searchPhotos': function() {
-			    	sections.toggle(this.path);
-			    	searchFunction.classList.toggle('active-flex');			    	
+			    	sections.toggle(this.path);			    	
 			    },
-
 			    'single/:id': function(photoId) {
 			    	photoGallery.singlePhoto(photoId);
 			   	 	sections.toggle('singlePhoto');			   	 	
 			    },
-
 			    'user/:username': function(userId){
-			    	single.userInfo(userId);
-			    	single.userHeader(userId);
-			    	single.userFeed(userId);
+			    	singleUser.info(userId);
+			    	singleUser.header(userId);
+			    	singleUser.feed(userId);
 			    	sections.toggle('singleUser');			    	
 			    }
 
@@ -79,6 +60,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 		toggle: function(hashName) {
 
 			var section = document.getElementById(hashName);
+			var allSections = document.querySelectorAll('section');
 
 			for (var i = 0; i < allSections.length; i++) {
 				allSections[i].classList.remove('active');
@@ -90,63 +72,11 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 	}
 
-	var photoGallery = {
-
-		popularPosts: function() {
-
-			aja()
-				.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
-			    .type('jsonp')
-			    .cache('false')
-			    .on('success', function(data){			    
-			    	
-			    	var data = data.data;
-			   
-			    	var filteredData = _.map(data, function(photoInfo){
-			    		return _.pick(photoInfo, 'id', 'images', 'likes');
-			    	});
-
-			    	data = filteredData;
-
-			    	console.log(data);
-
-			        var directives = {
-			      			       
-			        	photoLink: {
-			        		href: function(params) {
-			        			return '#single/' + this.id;			        		
-			        		}
-			        	},
-			        	photoImage: {
-			        		src: function(params) {
-			        			return this.images.low_resolution.url;
-			        		}			        	
-			        	},
-			        	photoLikes: {
-			        		text: function(params) {
-			        			return this.likes.count;
-			        		}
-			        	}
-			        	
-					}
-
-					Transparency.render(popularPostsTarget, data, directives);
-
-			    })
-
-			.go();
-
-			setTimeout(function() {
-	    	 	photoGallery.shake();
-	    	}, 2000);		
-
-		},
+	var gestures = {
 
 		shake: function() {
 
 			console.log('Shake function loaded');
-
-			// listen to shake event
 		    var photoShuffle = new Shake ({
 		    	threshold: 15, // shake strength threshold
 		    	timeout: 1000 // determines the frequency of event generation
@@ -155,6 +85,8 @@ var errorMessageTarget = document.getElementById('errorMessage');
 		    photoShuffle.start();
 		   
 		    window.addEventListener('shake', function() {
+
+		    	loadingSpinner.classList.add('spinning');
 		        
 			    aja()
 					.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -170,10 +102,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 				    	data = filteredData;
 
-				    	console.log(data);
-
-				        var directives = {
-				      			       
+				        var directives = {				      			       
 				        	photoLink: {
 				        		href: function(params) {
 				        			return '#single/' + this.id;			        		
@@ -188,11 +117,14 @@ var errorMessageTarget = document.getElementById('errorMessage');
 				        		text: function(params) {
 				        			return this.likes.count;
 				        		}
-				        	}
-				        	
+				        	}				        	
 						}
 
+						var popularPostsTarget = document.getElementById('popularPosts');
+
 						Transparency.render(popularPostsTarget, data, directives);
+
+						loadingSpinner.classList.remove('spinning');
 
 				    })
 
@@ -207,19 +139,47 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 		},
 
-		searchFunction: function(){
+		swipe: function() {
 
-			searchSubmit.addEventListener('click', function(){
-				var tag = searchInput.value;
-				photoGallery.searchResults(tag);
+			console.log('Swipe function loaded');
+			var swiping = new Hammer(swipeMenuTarget);
+
+			swiping.on('swiperight', function() {
+			    console.log('Swipe right');			   
+			    var menuSwipe = document.querySelector('a[href="#popularMedia"]');			   
+			    menuSwipe.click();
+			});
+
+			swiping.on('swipeleft', function() {
+			    console.log('Swipe left');
+			    var menuSwipe = document.querySelector('a[href="#searchPhotos"]');			   
+			    menuSwipe.click();
 			});
 
 		},
 
-		searchResults: function(tag) {
-			
+		press: function(){
+
+			console.log('Press function loaded');
+			var pressLikes = new Hammer(photoPressTarget);
+
+			pressLikes.on('press', function() {
+			    console.log('Pressed');
+			   	document.querySelector('.photoImage .likeIcon').classList.toggle('visible');
+			});
+
+		}
+
+	}
+
+	var photoGallery = {
+
+		popularPosts: function() {
+
+            loadingSpinner.classList.add('spinning');
+
 			aja()
-				.url('https://api.instagram.com/v1/tags/' + tag + '/media/recent?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+				.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
 			    .type('jsonp')
 			    .cache('false')
 			    .on('success', function(data){			    
@@ -227,78 +187,48 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	var data = data.data;
 			   
 			    	var filteredData = _.map(data, function(photoInfo){
-			    		return _.pick(photoInfo, 'id', 'likes', 'user', 'images');
+			    		return _.pick(photoInfo, 'id', 'images', 'likes');
 			    	});
 
 			    	data = filteredData;
 
-			    	console.log(data);
+			        var directives = {			      			       
+			        	photoLink: {
+			        		href: function(params) {
+			        			return '#single/' + this.id;			        		
+			        		}
+			        	},
+			        	photoImage: {
+			        		src: function(params) {
+			        			return this.images.low_resolution.url;
+			        		}			        	
+			        	},
+			        	photoLikes: {
+			        		text: function(params) {
+			        			return this.likes.count;
+			        		}
+			        	}			        	
+					}
 
-			    	if (data.length < 1) {
+					var popularPostsTarget = document.getElementById('popularPosts');
 
-			    		console.log('Tag not found');
-
-			    		photoGallery.noResults(tag);
-
-			    	} else {
-
-			    		console.log('Tag found');
-
-			    		likeIcon.classList.add("show");
-
-			    		var directives = {
-			      			       
-				        	photoLink: {
-				        		href: function(params) {
-				        			return '#single/' + this.id;			        		
-				        		}
-				        	},
-				        	photoImage: {
-				        		src: function(params) {
-				        			return this.images.low_resolution.url;
-				        		}			        	
-				        	},
-				        	photoLikes: {
-				        		text: function(params) {
-				        			return this.likes.count;
-				        		}
-				        	},
-				        	photoUser: {
-				        		href: function(params) {
-				        			return '#user/' + this.user.id;
-				        		}
-				        	}
-			        	
-						}
-
-					Transparency.render(photoGalleryTarget, data, directives);
-
-			    	}
+					Transparency.render(popularPostsTarget, data, directives);
+					
+					loadingSpinner.classList.remove('spinning');
 
 			    })
 
 			.go();
-		},
 
-		noResults: function(tag) {
-
-			console.log('Fire error');
-
-			var directives = {
-			      			       
-	        	error: {
-	        		text: function(params) {
-	        			return 'There are no photos tagged with: ' + tag + '.';
-	        		}
-	        	}
-	        	
-			}
-
-			Transparency.render(errorMessageTarget, tag, directives);
+			setTimeout(function() {
+	    	 	gestures.shake();
+	    	}, 2000);		
 
 		},
 
 		singlePhoto: function(photoId) {
+
+			loadingSpinner.classList.add('spinning');	
 
 			aja()
 				.url('https://api.instagram.com/v1/media/' +  photoId + '?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -308,10 +238,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	
 			    	var data = data.data;
 
-			    	console.log(data);
-
 			        var directives = {
-
 			      		photoTitle: {
 			      			text: function(params) {
 		                		if (this.caption) {
@@ -340,23 +267,132 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			        		text: function(params) {
 			        			return  this.user.full_name;
 			        		}
-			        	}
-			        	
+			        	}	
 					}
 
+					var singlePhotoTarget = document.getElementById('singlePhoto');
+
 					Transparency.render(singlePhotoTarget, data, directives);
+					
+					loadingSpinner.classList.remove('spinning');
 
 			    })
 
 			.go();
 
+			setTimeout(function() {
+	    	 	gestures.press();
+	    	}, 2000);
+
 		}
 	
 	}
 
-	var single = {
+	var search = {
 
-		userHeader: function(userId) {
+		searchFunction: function(){
+
+			var searchSubmit = document.getElementById('submit');
+			var searchInput = document.getElementById('search');
+
+			searchSubmit.addEventListener('click', function(){
+				var tag = searchInput.value;
+				search.results(tag);
+			});
+
+		},
+
+		results: function(tag) {
+
+			loadingSpinner.classList.add('spinning');
+
+			var likeIcon = document.querySelector('.likeIcon');
+			
+			aja()
+				.url('https://api.instagram.com/v1/tags/' + tag + '/media/recent?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+			    .type('jsonp')
+			    .cache('false')
+			    .on('success', function(data){			    
+			    	
+			    	var data = data.data;
+			   
+			    	var filteredData = _.map(data, function(photoInfo){
+			    		return _.pick(photoInfo, 'id', 'likes', 'user', 'images');
+			    	});
+
+			    	data = filteredData;
+
+			    	if (data.length < 1) {
+
+			    		console.log('Tag not found');
+			    		search.noResults(tag);
+
+			    	} else {
+
+			    		console.log('Tag found');
+			    		likeIcon.classList.add("show");
+			    		
+			    		var directives = {			   	       
+				        	photoLink: {
+				        		href: function(params) {
+				        			return '#single/' + this.id;			        		
+				        		}
+				        	},
+				        	photoImage: {
+				        		src: function(params) {
+				        			return this.images.low_resolution.url;
+				        		}			        	
+				        	},
+				        	photoLikes: {
+				        		text: function(params) {
+				        			return this.likes.count;
+				        		}
+				        	},
+				        	photoUser: {
+				        		href: function(params) {
+				        			return '#user/' + this.user.id;
+				        		}
+				        	}			        
+						}
+
+					var photoGalleryTarget = document.getElementById('photoGallery');
+
+					Transparency.render(photoGalleryTarget, data, directives);
+					
+					loadingSpinner.classList.remove('spinning');
+
+			    	}
+
+			    })
+
+			.go();
+		},
+
+		noResults: function(tag) {
+
+			console.log('Fire error');
+			var errorMessageTarget = document.getElementById('errorMessage');
+
+			var directives = {			      			       
+	        	error: {
+	        		text: function(params) {
+	        			return 'There are no photos tagged with: ' + tag + '.';
+	        		}
+	        	}	
+			}
+
+			Transparency.render(errorMessageTarget, tag, directives);
+			loadingSpinner.classList.remove('spinning');
+
+		}
+
+	}
+
+	var singleUser = {
+
+		header: function(userId) {
+
+			loadingSpinner.classList.add('spinning');
 
 			aja()
 				.url('https://api.instagram.com/v1/users/'  +  userId + '/media/recent/?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -371,16 +407,18 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	data = data[photoChoice];
 
 			        var directives = {
-
 			      		headerImage: {
 			        		src: function(params) {
 			        			return this.images.standard_resolution.url;;
 			        		}
-			        	}
-			        	
+			        	}			        	
 					}
 
+					var userHeaderTarget = document.getElementById('userHeader');
+
 					Transparency.render(userHeaderTarget, data, directives);
+					
+					loadingSpinner.classList.remove('spinning');
 
 			    })
 
@@ -388,7 +426,9 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 		},
 
-		userInfo: function(userId) {
+		info: function(userId) {
+
+			loadingSpinner.classList.add('spinning');
 			
 			aja()
 				.url('https://api.instagram.com/v1/users/'  +  userId + '?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -398,10 +438,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	
 			    	var data = data.data;
 
-			    	console.log(data);
-
 			        var directives = {
-
 			      		userPicture: {
 			      			src: function(params) {
 			      				return this.profile_picture;
@@ -416,11 +453,14 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			        		text: function(params) {
 			        			return this.bio;
 			        		}
-			        	}
-			        	
+			        	}   	
 					}
 
+					var userInfoTarget = document.getElementById('userInfo');
+					
 					Transparency.render(userInfoTarget, data, directives);
+					
+					loadingSpinner.classList.remove('spinning');
 
 			    })
 
@@ -428,7 +468,9 @@ var errorMessageTarget = document.getElementById('errorMessage');
 
 		},
 
-		userFeed: function(userId) {
+		feed: function(userId) {
+
+			loadingSpinner.classList.add('spinning');
 	
 			aja()
 				.url('https://api.instagram.com/v1/users/'  +  userId + '/media/recent/?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -438,10 +480,7 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			    	
 			    	var data = data.data;
 
-			    	console.log(data);
-
-			        var directives = {
-	
+			        var directives = {	
 			      		photoLink: {
 			        		href: function(params) {
 			        			return '#single/' + this.id;			        		
@@ -456,11 +495,15 @@ var errorMessageTarget = document.getElementById('errorMessage');
 			        		text: function(params) {
 			        			return this.likes.count;
 			        		}
-			        	}
-			        	
+			        	}			        	
 					}
 
+					var userFeedTarget = document.getElementById('userFeed');
+					var feedItemsTarget = document.getElementById('feedItems');
+
 					Transparency.render(feedItemsTarget, data, directives);
+					
+					loadingSpinner.classList.remove('spinning');
 
 			    })
 
