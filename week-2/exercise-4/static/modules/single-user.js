@@ -1,12 +1,8 @@
-'use strict'
+var singleUser = (function(userId) {
 
-var singleUser = (function() {
-	
-	return {
+		var header = function(userId) {
 
-		header: function(userId) {
-
-			loadingSpinner.classList.add('spinning');
+			loader.spinner().classList.add('spinning'); // show loader till render
 
 			aja()
 				.url('https://api.instagram.com/v1/users/'  +  userId + '/media/recent/?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -21,28 +17,26 @@ var singleUser = (function() {
 			    	data = data[photoChoice];
 
 			        var directives = {
-
 			      		headerImage: {
 			        		src: function(params) {
 			        			return this.images.standard_resolution.url;;
 			        		}
-			        	}
-			        	
+			        	}			        	
 					}
 
+					var userHeaderTarget = document.getElementById('userHeader');
 					Transparency.render(userHeaderTarget, data, directives);
-
-					loadingSpinner.classList.remove('spinning');
+					loader.spinner().classList.remove('spinning'); // remove loader
 
 			    })
 
 			.go();
 
-		},
+		};
 
-		info: function(userId) {
+		var info = function(userId) {
 
-			loadingSpinner.classList.add('spinning');
+			loader.spinner().classList.add('spinning'); // show loader till render
 			
 			aja()
 				.url('https://api.instagram.com/v1/users/'  +  userId + '?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -52,10 +46,7 @@ var singleUser = (function() {
 			    	
 			    	var data = data.data;
 
-			    	console.log(data);
-
 			        var directives = {
-
 			      		userPicture: {
 			      			src: function(params) {
 			      				return this.profile_picture;
@@ -70,23 +61,24 @@ var singleUser = (function() {
 			        		text: function(params) {
 			        			return this.bio;
 			        		}
-			        	}
-			        	
+			        	}   	
 					}
 
+					var userInfoTarget = document.getElementById('userInfo');
+					
 					Transparency.render(userInfoTarget, data, directives);
-
-					loadingSpinner.classList.remove('spinning');
+					
+					loader.spinner().classList.remove('spinning');
 
 			    })
 
 			.go();
 
-		},
+		};
 
-		feed: function(userId) {
+		var feed = function(userId) {
 
-			loadingSpinner.classList.add('spinning');
+			loader.spinner().classList.add('spinning'); // show loader till render
 	
 			aja()
 				.url('https://api.instagram.com/v1/users/'  +  userId + '/media/recent/?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -96,10 +88,7 @@ var singleUser = (function() {
 			    	
 			    	var data = data.data;
 
-			    	console.log(data);
-
-			        var directives = {
-	
+			        var directives = {	
 			      		photoLink: {
 			        		href: function(params) {
 			        			return '#single/' + this.id;			        		
@@ -114,20 +103,24 @@ var singleUser = (function() {
 			        		text: function(params) {
 			        			return this.likes.count;
 			        		}
-			        	}
-			        	
+			        	}			        	
 					}
 
+					var userFeedTarget = document.getElementById('userFeed');
+					var feedItemsTarget = document.getElementById('feedItems');
 					Transparency.render(feedItemsTarget, data, directives);
-
-					loadingSpinner.classList.remove('spinning');
+					loader.spinner().classList.remove('spinning');
 
 			    })
 
 			.go();			
 
-		}
+		};
 
+	return {
+		header, 
+		info, 
+		feed
 	}
 
 })();

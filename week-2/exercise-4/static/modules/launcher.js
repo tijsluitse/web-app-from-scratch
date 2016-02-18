@@ -1,16 +1,18 @@
 'use strict'
 
 var launcher = (function() {
-	
-	return {
 
-		init: function(){
-			routes.init();
-			photoGallery.popularPosts();	
-			search.searchFunction();
-			gestures.swipe();
-		}
-
+	var init = function() {
+		loader.spinner();
+		routes.init();
+		search();
+		gestures.swipe();
 	}
 
+	return {
+		init: init
+	};
+
 })();
+
+launcher.init();

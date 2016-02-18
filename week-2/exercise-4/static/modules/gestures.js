@@ -1,114 +1,121 @@
-'use strict'
-
 var gestures = (function() {
-	
-	return {
 
-		shake: function() {
+	// declare variables
+	var swipeMenuTarget = document.querySelector('body');
+	var pressPhotoTarget = document.querySelector('.photoImage');
 
-			console.log('Shake function loaded');
+	var shake = function() {
 
-			// listen to shake event
-		    var photoShuffle = new Shake ({
-		    	threshold: 15, // shake strength threshold
-		    	timeout: 1000 // determines the frequency of event generation
-		    });
+		console.log('Shake function loaded');
 
-		    photoShuffle.start();
-		   
-		    window.addEventListener('shake', function() {
+		// listen to shake event
+	    var photoShuffle = new Shake ({
+	    	threshold: 15, // shake strength threshold
+	    	timeout: 1000 // determines the frequency of event generation
+	    });
 
-		    	loadingSpinner.classList.add('spinning');
-		        
-			    aja()
-					.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
-				    .type('jsonp')
-				    .cache('false')
-				    .on('success', function(data){			    
-				    	
-				    	var data = data.data;
-				   
-				    	var filteredData = _.map(data, function(photoInfo){
-				    		return _.pick(photoInfo, 'id', 'images', 'likes');
-				    	});
+	    photoShuffle.start();
+	   
+	    window.addEventListener('shake', function() {
 
-				    	data = filteredData;
+	    	loader.spinner().classList.add('spinning');
 
-				    	console.log(data);
-
-				        var directives = {
-				      			       
-				        	photoLink: {
-				        		href: function(params) {
-				        			return '#single/' + this.id;			        		
-				        		}
-				        	},
-				        	photoImage: {
-				        		src: function(params) {
-				        			return this.images.low_resolution.url;
-				        		}			        	
-				        	},
-				        	photoLikes: {
-				        		text: function(params) {
-				        			return this.likes.count;
-				        		}
-				        	}
-				        	
-						}
-
-						Transparency.render(popularPostsTarget, data, directives);
-
-						loadingSpinner.classList.remove('spinning');
-
-				    })
-
-				.go();
-
-		    }, false);
-
-		    // check if shake is supported or not.
-		    if (!('ondevicemotion' in window)){
-		    	alert('Not Supported');
-		    };
-
-		},
-
-		swipe: function() {
-
-			console.log('Swipe function loaded');
-			var swiping = new Hammer(swipeMenuTarget);
-
-			swiping.on('swiperight', function() {
+	    	// photoGallery.popularPosts();
+	        
+		    aja()
+				.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+			    .type('jsonp')
+			    .cache('false')
+			    .on('success', function(data){			    
+			    	
+			    	var data = data.data;
 			   
-			    console.log('Swipe right');			   
-			    var menuSwipe = document.querySelector('a[href="#popularMedia"]');			   
-			    menuSwipe.click();
+			    	var filteredData = _.map(data, function(photoInfo){
+			    		return _.pick(photoInfo, 'id', 'images', 'likes');
+			    	});
 
-			});
+			    	data = filteredData;
 
-			swiping.on('swipeleft', function() {
-			    
-			    console.log('Swipe left');
-			    var menuSwipe = document.querySelector('a[href="#searchPhotos"]');			   
-			    menuSwipe.click();
+			    	console.log(data);
 
-			});
+			        var directives = {
+			      			       
+			        	photoLink: {
+			        		href: function(params) {
+			        			return '#single/' + this.id;			        		
+			        		}
+			        	},
+			        	photoImage: {
+			        		src: function(params) {
+			        			return this.images.low_resolution.url;
+			        		}			        	
+			        	},
+			        	photoLikes: {
+			        		text: function(params) {
+			        			return this.likes.count;
+			        		}
+			        	}
+			        	
+					}
 
-		},
+					Transparency.render(popularPostsTarget, data, directives);
 
-		press: function(){
+					loader.spinner().classList.remove('spinning');
 
-			console.log('Press function loaded');
-			var pressLikes = new Hammer(photoPressTarget);
+			    })
 
-			pressLikes.on('press', function() {
-			    
-			    console.log('Pressed');
-			   	document.querySelector('.photoImage .likeIcon').classList.toggle('visible');
+			.go();
 
-			});
+	    }, false);
 
-		}
+	    // check if shake is supported or not.
+	    if (!('ondevicemotion' in window)){
+	    	alert('Not Supported');
+	    };
+
+	};
+
+	var swipe = function() {
+
+		console.log('Swipe function loaded');
+		var swiping = new Hammer(swipeMenuTarget);
+
+		swiping.on('swiperight', function() {
+		   
+		    console.log('Swipe right');			   
+		    var menuSwipe = document.querySelector('a[href="#popularMedia"]');			   
+		    menuSwipe.click();
+
+		});
+
+		swiping.on('swipeleft', function() {
+		    
+		    console.log('Swipe left');
+		    var menuSwipe = document.querySelector('a[href="#searchPhotos"]');			   
+		    menuSwipe.click();
+
+		});
+
+	};
+
+	var press = function(){
+
+		console.log('Press function loaded');
+		var pressLikes = new Hammer(pressPhotoTarget);
+
+		pressLikes.on('press', function() {
+		    
+		    console.log('Pressed');
+		   	document.querySelector('.photoImage .likeIcon').classList.toggle('visible');
+
+		});
+
+	};
+
+	return {
+		shake, 
+		swipe, 
+		press
 	}
 
 })();

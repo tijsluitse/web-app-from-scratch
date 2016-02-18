@@ -11,8 +11,8 @@ body {
     font-weight: 100;
     background-color: #F7F7F7;
     color: #4b4f54;
-    width: vmax;
-    height: vmax;
+    width: 100%;
+    height: 100vmax;
     position: relative;
 }
 
@@ -116,7 +116,7 @@ main > section {
 	margin: auto;
 }
 
-#singlePhoto .likeIcon {
+#singlePhoto .likeIconXl {
 	width: 3em;
 	position: relative;
 	top: .3em;
@@ -145,6 +145,7 @@ ul[role='photoFeed'] li {
     flex-wrap: wrap;
     width: 25%;
     box-sizing: border-box;
+    justify-content: space-around;
 }
 
 ul[role='photoFeed'] li a {
@@ -158,7 +159,6 @@ ul[role='photoFeed'] img {
 
 [role='photoFeed'] .likeIcon {
 	width: .9em;
-	display: none;
 }
 
 /****************/
@@ -185,6 +185,10 @@ ul[role='photoFeed'] img {
 	opacity: 0;
 }
 
+.hide {
+	display: none;
+}
+
 /********/
 /* FORM */
 /********/
@@ -194,6 +198,8 @@ form {
 	margin: auto;
 	margin-top: 2em;
 	margin-bottom: 1em;
+	display: flex;
+	flex-direction: row;
 }
  
 form input, 
@@ -211,12 +217,12 @@ form input:focus {
 }
 
 form input:first-of-type {
-	width: 90%;
+	width: 85%;
 	padding-left: 1em;
 }
 
 form div {
-	width: 10%;
+	width: 15%;
 	text-align: center;
 	border: 2px solid #3CBEB2;
 	color: #3CBEB2;
@@ -273,6 +279,10 @@ form div:hover svg path {
 		width: 100%;
 		overflow: hidden;
 	}
+	ul[role='photoFeed'] {
+		width: 90%;
+		margin: auto;
+	}
 	ul[role='photoFeed'] li {
     	width: 100%;
 	}
@@ -291,14 +301,26 @@ form div:hover svg path {
 	}
 }
 
+/**********/
+/* LOADER */
+/**********/
+
 .spinner {
 	background-color: white;
 	position: fixed;
+	z-index: 100000;
 	left: 0;
 	top: 0;
 	width: 100%;
 	height: 100%;
 	display: none;
+}
+
+.spinning img {
+	left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
 }
 
 .spinning {
