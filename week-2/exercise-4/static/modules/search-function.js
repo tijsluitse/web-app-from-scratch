@@ -11,7 +11,11 @@ var search = (function() {
 
 		searchSubmit.addEventListener('click', function(){
 			var tag = searchInput.value;
-			search.results(tag);
+			if (tag.length > 0) {
+				search.results(tag);
+			} else {
+				search.noResults(tag);
+			}
 		});
 
 	};
@@ -41,8 +45,14 @@ var search = (function() {
 
 			    		console.log('Tag found');
 			    		errorMessageTarget.classList.add("hide");
+
 			    		
-			    		var directives = {			   	       
+			    		var directives = {	
+			    			typedTag: { 
+			    				text: function(params) {
+			    					return '#' + tag;
+			    				}
+			    			},		   	       
 				        	photoLink: {
 				        		href: function(params) {
 				        			return '#single/' + this.id;			        		
@@ -73,12 +83,15 @@ var search = (function() {
 					var photoGalleryTarget = document.getElementById('photoGallery');
 					Transparency.render(photoGalleryTarget, data, directives);
 					loader.spinner().classList.remove('spinning');
+					tag = null;
 
 			    	}
 
 			    })
 
 			.go();
+
+
 		};
 
 		var noResults = function(tag) {

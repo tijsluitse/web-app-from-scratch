@@ -19,8 +19,6 @@ var gestures = (function() {
 	    window.addEventListener('shake', function() {
 
 	    	loader.spinner().classList.add('spinning');
-
-	    	// photoGallery.popularPosts();
 	        
 		    aja()
 				.url('https://api.instagram.com/v1/media/popular?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
@@ -58,6 +56,7 @@ var gestures = (function() {
 			        	
 					}
 
+					var popularPostsTarget = document.getElementById('popularPosts');
 					Transparency.render(popularPostsTarget, data, directives);
 
 					loader.spinner().classList.remove('spinning');

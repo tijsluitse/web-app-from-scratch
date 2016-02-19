@@ -15,8 +15,19 @@ var animations = (function() {
 
 	}
 
+	var fastClicker = function() {
+
+		if ('addEventListener' in document) {
+		    document.addEventListener('DOMContentLoaded', function() {
+		        FastClick.attach(document.body);
+		    }, false);
+		}
+
+	}
+
 	return {
-		scrolling
+		scrolling,
+		fastClicker
 	}
 
 })();
