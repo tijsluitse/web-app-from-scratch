@@ -1,5 +1,7 @@
 var search = (function() {
 
+	var errorMessageTarget = document.getElementById('errorMessage');
+
 	var searchFunction = function(){
 
 		console.log("Search function fired");
@@ -38,7 +40,6 @@ var search = (function() {
 			    	} else {
 
 			    		console.log('Tag found');
-			    		likeIcon.classList.add("show");
 			    		errorMessageTarget.classList.add("hide");
 			    		
 			    		var directives = {			   	       
@@ -104,4 +105,4 @@ var search = (function() {
 
 		}
 
-});
+})();

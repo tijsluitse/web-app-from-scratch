@@ -1,10 +1,6 @@
 var routes = (function() {
 
 		var init = function() {
-			// // set default landingpage to popular media
-   //          window.location.hash = '#popularMedia';           
-   //          var popularMedia = document.querySelector('#popularMedia');
-   //          popularMedia.classList.add('active');
 
 			routie({
 			    'popularMedia': function() {		    	    				    	
@@ -13,7 +9,7 @@ var routes = (function() {
 			    },
 			    'searchPhotos': function() {
 			    	routes.toggle(this.path);
-			    	search();			    	
+			    	search.searchFunction();			    	
 			    },
 			    'single/:id': function(photoId) {
 			    	photoGallery.singlePhoto(photoId);

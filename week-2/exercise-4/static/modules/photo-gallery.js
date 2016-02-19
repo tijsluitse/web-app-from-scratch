@@ -67,6 +67,8 @@ var photoGallery = (function(photoId) {
 		    	
 		    	var data = data.data;
 
+		    	var viewportWidth = window.outerWidth;
+
 		        var directives = {
 		      		photoTitle: {
 		      			text: function(params) {
@@ -79,7 +81,11 @@ var photoGallery = (function(photoId) {
 		      		},	       
 		        	photoImage: {
 		        		src: function(params) {
-		        			return this.images.standard_resolution.url;
+		        			if (viewportWidth > 600) {
+		        				return this.images.standard_resolution.url;
+		        			} else {
+		        				return this.images.low_resolution.url;
+		        			}
 		        		}			        	
 		        	},
 		        	photoLikes: {

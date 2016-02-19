@@ -3,10 +3,12 @@
 var launcher = (function() {
 
 	var init = function() {
+		animations.scrolling();
 		loader.spinner();
 		routes.init();
-		search();
+		search.searchFunction();
 		gestures.swipe();
+
 	}
 
 	return {
