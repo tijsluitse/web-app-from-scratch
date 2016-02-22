@@ -1,11 +1,11 @@
-var singleUser = (function(userId) {
+var user = (function(userId) {
 
 		var header = function(userId) {
 
 			loader.spinner().classList.add('spinning'); // show loader till render
 
 			aja()
-				.url('https://api.instagram.com/v1/users/'  +  userId + '/media/recent/?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+				.url(variables.init.userApi  +  userId + '/media/recent/' + variables.init.accesToken)
 			    .type('jsonp')
 			    .cache('false')
 			    .on('success', function(data){			    
@@ -39,7 +39,7 @@ var singleUser = (function(userId) {
 			loader.spinner().classList.add('spinning'); // show loader till render
 			
 			aja()
-				.url('https://api.instagram.com/v1/users/'  +  userId + '?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+				.url(variables.init.userApi  +  userId + variables.init.accesToken)
 			    .type('jsonp')
 			    .cache('false')
 			    .on('success', function(data){			    
@@ -81,7 +81,7 @@ var singleUser = (function(userId) {
 			loader.spinner().classList.add('spinning'); // show loader till render
 	
 			aja()
-				.url('https://api.instagram.com/v1/users/'  +  userId + '/media/recent/?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+				.url(variables.init.userApi  +  userId + '/media/recent/' + variables.init.accesToken)
 			    .type('jsonp')
 			    .cache('false')
 			    .on('success', function(data){			    
@@ -91,7 +91,7 @@ var singleUser = (function(userId) {
 			        var directives = {	
 			      		photoLink: {
 			        		href: function(params) {
-			        			return '#single/' + this.id;			        		
+			        			return '#photo/' + this.id;			        		
 			        		}
 			        	},
 			        	photoImage: {

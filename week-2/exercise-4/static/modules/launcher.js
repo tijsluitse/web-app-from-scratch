@@ -4,11 +4,16 @@ var launcher = (function() {
 
 	var init = function() {
 		animations.scrolling();
+		animations.fastClicker();
+		
 		loader.spinner();
-		routes.init();
-		search.searchFunction();
+		search.input();
+		
 		gestures.swipe();
+		gestures.shake();
+		gestures.press();
 
+		sections.init();
 	}
 
 	return {

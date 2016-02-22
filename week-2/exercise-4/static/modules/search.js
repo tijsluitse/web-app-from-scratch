@@ -2,9 +2,9 @@ var search = (function() {
 
 	var errorMessageTarget = document.getElementById('errorMessage');
 
-	var searchFunction = function(){
+	var input = function(){
 
-		console.log("Search function fired");
+		console.log("Search function loaded");
 
 		var searchSubmit = document.getElementById('submit');
 		var searchInput = document.getElementById('search');
@@ -25,7 +25,7 @@ var search = (function() {
 			loader.spinner().classList.add('spinning');
 			
 			aja()
-				.url('https://api.instagram.com/v1/tags/' + tag + '/media/recent?access_token=806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b')
+				.url(variables.init.tagApi + tag + '/media/recent' + variables.init.accesToken)
 			    .type('jsonp')
 			    .cache('false')
 			    .on('success', function(data){			    
@@ -55,7 +55,7 @@ var search = (function() {
 			    			},		   	       
 				        	photoLink: {
 				        		href: function(params) {
-				        			return '#single/' + this.id;			        		
+				        			return '#photo/' + this.id;			        		
 				        		}
 				        	},
 				        	photoImage: {
@@ -112,7 +112,7 @@ var search = (function() {
 		};
 
 		return {
-			searchFunction,
+			input,
 			results,
 			noResults
 

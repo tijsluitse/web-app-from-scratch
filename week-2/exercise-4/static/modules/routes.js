@@ -1,27 +1,28 @@
-var routes = (function() {
+var sections = (function() {
 
 		var init = function() {
 
 			routie({
-			    'popularMedia': function() {		    	    				    	
-			    	routes.toggle(this.path);
-			    	photoGallery.popularPosts();
+			    'popularMedia': function() {	
+			    	photos.popular();	    	    				    	
+			    	sections.toggle(this.path);
 			    },
-			    'searchPhotos': function() {
-			    	routes.toggle(this.path);
-			    	search.searchFunction();			    	
+			    'tagSearch': function() {
+			    	sections.toggle(this.path);
+			    	search.input();			    	
 			    },
-			    'single/:id': function(photoId) {
-			    	photoGallery.singlePhoto(photoId);
-			   	 	routes.toggle('singlePhoto');
-			   	 	photoGallery.singlePhoto();	  	 	
+			    'photo/:id': function(photoId) {
+			    	photos.single(photoId);
+
+			   	 	sections.toggle('singlePhoto');
+			   	 	photos.single();	  	 	
 			    },
-			    // 
-			    'user/:username': function(userId){
-			    	singleUser.info(userId);
-			    	singleUser.header(userId);
-			    	singleUser.feed(userId);
-			    	routes.toggle('singleUser');			    	
+			    'user/:id': function(userId){
+			    	user.info(userId);
+			    	user.header(userId);
+			    	user.feed(userId);
+
+			    	sections.toggle('singleUser');			    	
 			    }
 			});
 		};
