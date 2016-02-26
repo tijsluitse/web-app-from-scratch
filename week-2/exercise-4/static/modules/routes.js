@@ -21,7 +21,6 @@ var sections = (function() {
 			    	user.info(userId);
 			    	user.header(userId);
 			    	user.feed(userId);
-
 			    	sections.toggle('singleUser');			    	
 			    }
 			});
